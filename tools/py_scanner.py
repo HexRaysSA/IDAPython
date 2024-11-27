@@ -149,14 +149,21 @@ class collector_t(ast.NodeVisitor):
             with self.temp_scope_t(self, self.scope.new_class(node)):
                 self.generic_visit(node)
 
+    def visit_AnnAssign(self, node):
+        return self.visit_Assign(node)
+
     def visit_Assign(self, node):
         if self.in_function():
             return
-        if len(node.targets) == 1:
+        if isinstance(node, ast.AnnAssign):
+            target = node.target
+        elif len(node.targets) != 1:
+            return
+        else:
             target = node.targets[0]
-            if isinstance(target, ast.Name):
-                self.assign_variable  = target.id
-                self.assign_last_line = self._highest_lineno(node)
+        if isinstance(target, ast.Name):
+            self.assign_variable  = target.id
+            self.assign_last_line = self._highest_lineno(node)
 
     def _highest_lineno(self, node):
         if hasattr(node, "end_lineno"):
@@ -170,7 +177,7 @@ class collector_t(ast.NodeVisitor):
 
     def visit_Expr(self, node):
         # print("%d: %s" % (node.lineno, ast.dump(node.value)))
-        if not isinstance(node.value, ast.Str):
+        if not isinstance(node.value, ast.Constant):
             return
 
         if hasattr(node, "end_lineno"):
@@ -179,7 +186,7 @@ class collector_t(ast.NodeVisitor):
             # hack until Python 3.8; if <3.8, lineno = end
             line_before = node.lineno - len(node.value.s.split("\n"))
 
-        clean_doc = self._cleandoc(node.value.s)
+        clean_doc = self._cleandoc(node.value.value)
         if line_before == self.assign_last_line:
             self.scope.new_variable(node, self.assign_variable).set_doc(clean_doc)
         else:

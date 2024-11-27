@@ -68,7 +68,7 @@ class loader_input_t(pyidc_opaque_object_t):
         pass
 
     def read(self, size):
-        """Reads from the file. Returns the buffer or None"""
+        """Read up to size bytes (all data if size is negative). Return an empty bytes object on EOF."""
         pass
 
     def readbytes(self, size, big_endian):
@@ -312,17 +312,22 @@ public:
   }
 
   //--------------------------------------------------------------------------
-  PyObject *read(size_t size)
+  PyObject *read(size_t size=size_t(-1))
   {
     PYW_GIL_CHECK_LOCKED_SCOPE();
+    SWIG_PYTHON_THREAD_BEGIN_ALLOW;
     bytevec_t buf;
+    if ( ssize_t(size) < 0 )
+      size = qlsize(li) - qltell(li);
     buf.resize(size);
     ssize_t nread;
-    SWIG_PYTHON_THREAD_BEGIN_ALLOW;
     nread = qlread(li, (char *) buf.begin(), buf.size());
     SWIG_PYTHON_THREAD_END_ALLOW;
     if ( nread <= 0 )
-      Py_RETURN_NONE;
+    {
+      buf.clear();
+      nread = 0;
+    }
     return PyBytes_FromStringAndSize((const char *) buf.begin(), nread);
   }
 

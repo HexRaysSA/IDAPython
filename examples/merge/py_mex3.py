@@ -41,6 +41,19 @@ import ida_nalt
 
 
 # --------------------------------------------------------------------------
+# netnode to store plugin data
+MEX_NODE_NAME = "$ idapython mex3"
+# user input
+MEX_OPTION_FLAGS_IDX = ida_idaapi.BADADDR & -1   # atag
+MEX_OPTION_IDENT_IDX = ida_idaapi.BADADDR & -2   # stag
+# EA marks
+MEX_EA_TAG = 'm'
+
+# mex_ctx_t::flags bits
+MEX_FLAGS_0 = 0x01
+MEX_FLAGS_1 = 0x02
+
+# --------------------------------------------------------------------------
 class idp_listener_t(ida_idp.IDP_Hooks):
     """
     we need an event listener to catch processor_t::ev_create_merge_handlers
@@ -73,19 +86,26 @@ class idp_listener_t(ida_idp.IDP_Hooks):
         return 0
 
 
+    def ev_cvt64_supval(self, node, tag, idx, data):
+        """
+        Converter to i64 database
+        """
+        nn = ida_netnode.netnode(MEX_NODE_NAME)
+        if nn == node:
+            if tag == ida_netnode.stag:
+                nn.supset(MEX_OPTION_IDENT_IDX, data)
+                return 1
+            if tag == ida_netnode.atag and len(data):
+                val = int.from_bytes(data, 'little')
+                nn.altset(MEX_OPTION_FLAGS_IDX, val)
+                return 1
+            if chr(tag) == MEX_EA_TAG:
+                nn.supset(idx, data, MEX_EA_TAG)
+                return 1
+        return 0
+
+
 # --------------------------------------------------------------------------
-# netnode to store plugin data
-MEX_NODE_NAME = "$ idapython mex3"
-# user input
-MEX_OPTION_FLAGS_IDX = ida_idaapi.BADADDR & -1   # atag
-MEX_OPTION_IDENT_IDX = ida_idaapi.BADADDR & -2   # stag
-# EA marks
-MEX_EA_TAG = 'm'
-
-# mex_ctx_t::flags bits
-MEX_FLAGS_0 = 0x01
-MEX_FLAGS_1 = 0x02
-
 class mex_ctx_t(ida_idaapi.plugmod_t):
     """
     Regular plugin implementation below.

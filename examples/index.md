@@ -209,62 +209,6 @@ desktop plugin UI_Hooks
 
   </details>
 
-#### bin_search
-<details>
-  <summary>Showcasing `ida_bytes.bin_search`</summary>
-
-<blockquote>
-
-#### Source code
-<a href="https://github.com/idapython/src/blob/master/examples/core/bin_search.py">core/bin_search.py</a>
-
-#### Category
-core
-
-#### Description
-IDAPython's ida_bytes.bin_search function is pretty powerful,
-but can be tough to figure out at first. This example introduces
-
- * `ida_bytes.bin_search`, and
- * `ida_bytes.parse_binpat_str`
-
-in order to implement a simple replacement for the
-'Search > Sequence of bytes...' dialog, that lets users
-search for sequences of bytes that compose string literals
-in the binary file (either in the default 1-byte-per-char
-encoding, or as UTF-16.)
-
-#### Shortcut
-Ctrl+Shift+S
-
-#### Uses
-* ida_bytes.BIN_SEARCH_FORWARD
-* ida_bytes.BIN_SEARCH_NOBREAK
-* ida_bytes.BIN_SEARCH_NOSHOW
-* ida_bytes.bin_search
-* ida_bytes.compiled_binpat_vec_t
-* ida_bytes.parse_binpat_str
-* ida_ida.inf_get_max_ea
-* ida_idaapi.BADADDR
-* ida_kernwin.AST_DISABLE_FOR_WIDGET
-* ida_kernwin.AST_ENABLE_FOR_WIDGET
-* ida_kernwin.BWN_DISASM
-* ida_kernwin.Form
-* ida_kernwin.Form.ChkGroupControl
-* ida_kernwin.Form.StringInput
-* ida_kernwin.action_desc_t
-* ida_kernwin.action_handler_t
-* ida_kernwin.get_screen_ea
-* ida_kernwin.jumpto
-* ida_kernwin.register_action
-* ida_nalt.BPU_1B
-* ida_nalt.BPU_2B
-* ida_nalt.get_default_encoding_idx
-
-</blockquote>
-
-  </details>
-
 #### colorize_disassembly_on_the_fly
 <details>
   <summary>An easy-to-use way to colorize lines</summary>
@@ -538,7 +482,7 @@ the corresponding text.
 After running this script:
 
   * select some text in one of the listing widgets (i.e.,
-    "IDA View-*", "Enums", "Structures", "Pseudocode-*")
+    "IDA View-*", "Local Types", "Pseudocode-*")
   * press Ctrl+Shift+S to dump the selection
 
 #### Shortcut
@@ -549,12 +493,12 @@ Ctrl+Shift+S
 * ida_kernwin.AST_DISABLE_FOR_WIDGET
 * ida_kernwin.AST_ENABLE_FOR_WIDGET
 * ida_kernwin.BWN_DISASM
-* ida_kernwin.BWN_ENUMS
 * ida_kernwin.BWN_PSEUDOCODE
-* ida_kernwin.BWN_STRUCTS
+* ida_kernwin.BWN_TILVIEW
+* ida_kernwin.IWID_ANY_LISTING
 * ida_kernwin.action_desc_t
 * ida_kernwin.action_handler_t
-* ida_kernwin.get_current_viewer
+* ida_kernwin.get_last_widget
 * ida_kernwin.get_viewer_user_data
 * ida_kernwin.l_compare2
 * ida_kernwin.linearray_t
@@ -595,6 +539,54 @@ After running this script, try switching to the IDC interpreter
 #### Uses
 * ida_expr.VT_LONG
 * ida_expr.add_idc_func
+
+</blockquote>
+
+  </details>
+
+#### find_string
+<details>
+  <summary>Showcasing `ida_bytes.find_string`</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/find_string.py">core/find_string.py</a>
+
+#### Category
+core
+
+#### Description
+IDAPython's ida_bytes.find_string can be used to implement
+a simple replacement for the 'Search > Sequence of bytes...'
+dialog, that lets users search for sequences of bytes that
+compose string literals in the binary file (either in the
+default 1-byte-per-char encoding, or as UTF-16.)
+
+#### Shortcut
+Ctrl+Shift+S
+
+#### Uses
+* ida_bytes.BIN_SEARCH_FORWARD
+* ida_bytes.BIN_SEARCH_NOBREAK
+* ida_bytes.BIN_SEARCH_NOSHOW
+* ida_bytes.find_string
+* ida_ida.inf_get_max_ea
+* ida_idaapi.BADADDR
+* ida_kernwin.AST_DISABLE_FOR_WIDGET
+* ida_kernwin.AST_ENABLE_FOR_WIDGET
+* ida_kernwin.BWN_DISASM
+* ida_kernwin.Form
+* ida_kernwin.Form.ChkGroupControl
+* ida_kernwin.Form.StringInput
+* ida_kernwin.action_desc_t
+* ida_kernwin.action_handler_t
+* ida_kernwin.get_screen_ea
+* ida_kernwin.jumpto
+* ida_kernwin.register_action
+* ida_nalt.BPU_1B
+* ida_nalt.BPU_2B
+* ida_nalt.get_default_encoding_idx
 
 </blockquote>
 
@@ -936,7 +928,6 @@ xrefs
 * ida_bytes.get_flags
 * ida_bytes.is_stkvar
 * ida_frame.calc_stkvar_struc_offset
-* ida_frame.get_frame
 * ida_funcs.get_func
 * ida_ida.UA_MAXOP
 * ida_kernwin.AST_DISABLE_FOR_WIDGET
@@ -948,8 +939,9 @@ xrefs
 * ida_kernwin.get_highlight
 * ida_kernwin.get_screen_ea
 * ida_kernwin.register_action
-* ida_struct.get_member_by_name
-* ida_struct.get_struc
+* ida_typeinf.STRMEM_NAME
+* ida_typeinf.tinfo_t
+* ida_typeinf.udm_t
 * ida_ua.decode_insn
 * ida_ua.insn_t
 
@@ -2922,7 +2914,7 @@ then add our own markers along.
 ctxmenu UI_Hooks
 
 #### Uses
-* ida_graph.edge_t
+* ida_gdl.edge_t
 * ida_graph.get_graph_viewer
 * ida_graph.get_viewer_graph
 * ida_graph.point_t
@@ -3583,9 +3575,8 @@ actions listing
 * ida_kernwin.AST_ENABLE_FOR_WIDGET
 * ida_kernwin.BWN_CUSTVIEW
 * ida_kernwin.BWN_DISASM
-* ida_kernwin.BWN_ENUMS
 * ida_kernwin.BWN_PSEUDOCODE
-* ida_kernwin.BWN_STRUCTS
+* ida_kernwin.BWN_TILVIEW
 * ida_kernwin.action_desc_t
 * ida_kernwin.action_handler_t
 * ida_kernwin.custom_viewer_jump

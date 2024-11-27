@@ -70,7 +70,7 @@ class vds_hooks_t(ida_hexrays.Hexrays_Hooks):
             print("### %s: %s" % (method_name, ", ".join(argstrs)))
         return 0
 
-    def flowchart(self, fc):
+    def flowchart(self, fc, mba):
         return self._log()
 
     def stkpnts(self, mba, stkpnts):
@@ -92,6 +92,9 @@ class vds_hooks_t(ida_hexrays.Hexrays_Hooks):
         return self._log()
 
     def glbopt(self, mba):
+        return self._log()
+
+    def begin_structural(self, out, cfunc, ctrl_graph):
         return self._log()
 
     def structural(self, ctrl_graph):
@@ -171,6 +174,21 @@ class vds_hooks_t(ida_hexrays.Hexrays_Hooks):
 
     def calls_done(self, mba):
         return self._log()
+
+    def begin_inlining(self, cdg, flags):
+        return self._log()
+
+    def inlining_func(self, cdg, blk, mbr):
+        return self._log()
+
+    def inlined_func(self, cdg, blk, mbr, i1, i2):
+        return self._log()
+
+    def pre_structural(self, ctrl_graph, cfunc, cfg):
+        return self._log()
+
+    def collect_warnings(self, *args):
+        return 0
 
 vds_hooks = vds_hooks_t()
 vds_hooks.hook()

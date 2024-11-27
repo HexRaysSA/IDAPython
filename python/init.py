@@ -35,27 +35,30 @@ if not os.path.isabs(IDAPYTHON_DYNLOAD_BASE):
     IDAPYTHON_DYNLOAD_BASE = os.path.abspath(IDAPYTHON_DYNLOAD_BASE);
 
 # Prepare sys.path so loading of the shared objects works
-lib_dynload = os.path.join(
-    IDAPYTHON_DYNLOAD_BASE,
-    "python",
-    str(sys.version_info.major))
+lib_dynload = os.path.join(IDAPYTHON_DYNLOAD_BASE, "python")
 
 # We always want our own lib-dynload to come first:
 # the PyQt (& sip) modules that might have to be loaded, should
 # be the ones shipped with IDA and not those possibly available
 # on the system.
-sys.path.insert(0, os.path.join(lib_dynload, IDAPYTHON_DYNLOAD_RELPATH))
+sys.path.insert(0, os.path.join(lib_dynload, "lib-dynload"))
 sys.path.insert(0, lib_dynload)
 
-try:
-    import ida_idaapi
-    import ida_kernwin
-    import ida_diskio
-except ImportError as e:
-    print("Import failed: %s. Current sys.path:" % str(e))
-    for p in sys.path:
-        print("\t%s" % p)
-    raise
+# We want all ida_* modules to be available
+all_mods = "${MODULES}"
+
+for mod in all_mods.split(","):
+    try:
+        # Import module and make it visible at global scope
+        globals()[f"ida_{mod}"] = __import__(f"ida_{mod}")
+    except ImportError as e:
+        print("Import failed: %s. Current sys.path:" % str(e))
+        for p in sys.path:
+            print("\t%s" % p)
+        raise
+    except ModuleNotFoundError as e:
+        # Silently skip modules not present in current installation
+        continue
 
 
 # -----------------------------------------------------------------------
@@ -147,12 +150,11 @@ if os.getcwd() in sys.path:
 if not IDAPYTHON_REMOVE_CWD_SYS_PATH:
     sys.path.append(os.getcwd())
 
-# Additional $IDAUSR-derived paths
+# Additional IDAUSR-derived paths
 if IDAPYTHON_IDAUSR_SYSPATH:
     idausr_python_list = ida_diskio.get_ida_subdirs("python")
-    for idausr_python in idausr_python_list:
-        one = os.path.join(idausr_python, str(sys.version_info.major))
-        if one not in sys.path:
+    for one in idausr_python_list:
+        if one not in sys.path and os.path.exists(one):
             sys.path.append(one)
 
 if IDAPYTHON_COMPAT_AUTOIMPORT_MODULES:

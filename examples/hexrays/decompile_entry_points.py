@@ -22,7 +22,7 @@ import ida_kernwin
 # manually if we want to use it
 def init_hexrays():
     ALL_DECOMPILERS = {
-        ida_idp.PLFM_386: "hexrays",
+        ida_idp.PLFM_386: "hexx64",
         ida_idp.PLFM_ARM: "hexarm",
         ida_idp.PLFM_PPC: "hexppc",
         ida_idp.PLFM_MIPS: "hexmips",

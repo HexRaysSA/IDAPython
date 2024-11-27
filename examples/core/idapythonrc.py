@@ -1,4 +1,4 @@
-"""
+r"""
 summary: code to be run right after IDAPython initialization
 
 description:

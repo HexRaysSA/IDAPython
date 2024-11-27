@@ -18,6 +18,14 @@ with one or many examples, and those should be also put under test
 rather than if it consists of a bunch of IDAPython code our
 users will never see, and cannot be inspired from.)
 
+### Best practices
+
+* don't use `idc.py`: some of its operations are a bit too elusive
+* don't use `idaapi`: that "hides" the provenance of the
+  function/type/item being used, and makes it that much harder to
+  group ideas by module
+* don't `from <something> import <whatever>`: for the same reason
+
 ## Helping our customers, teaching IDAPython in the process
 
 In addition, when a customer asks for help on support@ (or the forums)

@@ -96,7 +96,7 @@ def _parse_enumerator(enumval_el, name, enum_name, hooks_info):
     if "type" in return_data:
         rtype = return_data["type"]
     elif ret_el is not None:
-        rdesc = ret_el.find("para").text
+        rdesc = doxygen_utils.join_all_element_text(ret_el)
         rtype, notype_rdesc, rdefault = _parse_return_type(rdesc)
 
     detaileddescription_el = enumval_el.find("detaileddescription")

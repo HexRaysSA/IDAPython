@@ -44,18 +44,17 @@ bool py_construct_macro(insn_t &insn, bool enable, PyObject *build_macro)
   if ( !PyCallable_Check(build_macro) )
     return false;
 
-  static qstack<ref_t> macro_builders;
-
-  macro_builders.push(newref_t(build_macro));
-  struct ida_local lambda_t
+  struct ida_local adapter_t : public macro_constructor_t
   {
-    static bool idaapi call_build_macro(insn_t &insn, bool may_go_forward)
+    PyObject *py_builder;
+
+    adapter_t(PyObject *b) : py_builder(b) {}
+    bool idaapi build_macro(insn_t *insn, bool may_go_forward) override
     {
-      PyObject *py_builder = macro_builders.top().o;
       ref_t py_res;
       if ( ref_t py_mod = ref_t(PyW_TryImportModule(SWIG_name)) )
       {
-        if ( ref_t py_insn = ref_t(try_create_swig_wrapper(py_mod, "insn_t", &insn)) )
+        if ( ref_t py_insn = ref_t(try_create_swig_wrapper(py_mod, "insn_t", insn)) )
         {
           py_res = newref_t(
                   PyObject_CallFunction(
@@ -69,9 +68,8 @@ bool py_construct_macro(insn_t &insn, bool enable, PyObject *build_macro)
       return py_res.o == Py_True;
     }
   };
-  bool res = construct_macro(insn, enable, lambda_t::call_build_macro);
-  macro_builders.pop();
-  return res;
+  adapter_t ad(build_macro);
+  return ad.construct_macro(&insn, enable);
 }
 
 //-------------------------------------------------------------------------

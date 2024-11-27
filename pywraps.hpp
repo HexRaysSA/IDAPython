@@ -95,7 +95,6 @@ static const char S_ON_CLOSE[]               = "OnClose";
 static const char S_ON_DBL_CLICK[]           = "OnDblClick";
 static const char S_ON_CURSOR_POS_CHANGED[]  = "OnCursorPosChanged";
 static const char S_ON_KEYDOWN[]             = "OnKeydown";
-static const char S_ON_COMPLETE_LINE[]       = "OnCompleteLine";
 static const char S_ON_FIND_COMPLETIONS[]    = "OnFindCompletions";
 static const char S_ON_CREATE[]              = "OnCreate";
 static const char S_ON_POPUP[]               = "OnPopup";
@@ -896,9 +895,10 @@ struct idapython_plugin_t : public plugmod_t, public event_listener_t
 
   static bool idaapi extlang_compile_file(
         const char *path,
+        const char *requested_namespace,
         qstring *errbuf)
   {
-    return get_instance()->_extlang_compile_file(path, errbuf);
+    return get_instance()->_extlang_compile_file(path, requested_namespace, errbuf);
   }
 
   static bool idaapi extlang_compile_expr(
@@ -996,17 +996,21 @@ struct idapython_plugin_t : public plugmod_t, public event_listener_t
 
   static bool idaapi cli_find_completions(
         qstrvec_t *out_completions,
+        qstrvec_t *out_hints,
+        qstrvec_t *out_docs,
         int *out_match_start,
         int *out_match_end,
         const char *line,
         int x)
   {
-    return get_instance()->_cli_find_completions(out_completions, out_match_start, out_match_end, line, x);
+    return get_instance()->_cli_find_completions(out_completions, out_hints, out_docs,
+                                                 out_match_start, out_match_end, line, x);
   }
 
 private:
   bool _extlang_compile_file(
         const char *path,
+        const char *requested_namespace,
         qstring *errbuf);
   bool _extlang_compile_expr(
         const char *name,
@@ -1060,6 +1064,8 @@ private:
         const char *line);
   bool _cli_find_completions(
         qstrvec_t *out_completions,
+        qstrvec_t *out_hints,
+        qstrvec_t *out_docs,
         int *out_match_start,
         int *out_match_end,
         const char *line,
@@ -1080,11 +1086,9 @@ private:
   bool _run_init_py();
 
   PyObject *_get_module_globals(const char *modname=nullptr);
-  PyObject *_get_module_globals_from_path_with_kind(
-        const char *path,
-        const char *kind);
   PyObject *_get_module_globals_from_path(
-        const char *path);
+        const char *path,
+        const char *requested_namespace);
 
   static idapython_plugin_t *instance;
 };
@@ -1354,6 +1358,8 @@ idaman void ida_export idapython_hide_wait_box();
 //-------------------------------------------------------------------------
 idaman bool ida_export idapython_convert_cli_completions(
         qstrvec_t *out_completions,
+        qstrvec_t *out_hints,
+        qstrvec_t *out_docs,
         int *out_match_start,
         int *out_match_end,
         ref_t py_res);

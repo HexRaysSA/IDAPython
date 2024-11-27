@@ -1,75 +1,9 @@
 #ifndef __PYWRAPS__LINES__
 #define __PYWRAPS__LINES__
 
-//<code(py_lines)>
-//------------------------------------------------------------------------
-static PyObject *py_get_user_defined_prefix = nullptr;
-static void idaapi s_py_get_user_defined_prefix(
-        qstring *buf,
-        ea_t ea,
-        int lnnum,
-        int indent,
-        const char *line)
-{
-  PYW_GIL_GET;
-  newref_t py_ret(
-          PyObject_CallFunction(
-                  py_get_user_defined_prefix,
-                  PY_BV_EA "iis" PY_BV_SZ,
-                  bvea_t(ea), lnnum, indent, line, 0));
-
-  // Error? Display it
-  // No error? Copy the buffer
-  if ( !PyW_ShowCbErr("py_get_user_defined_prefix") )
-    PyUnicode_as_qstring(buf, py_ret.o);
-}
-//</code(py_lines)>
-
 //------------------------------------------------------------------------
 
 //<inline(py_lines)>
-
-//------------------------------------------------------------------------
-/*
-#<pydoc>
-def set_user_defined_prefix(width, callback):
-    """
-    Deprecated. Please use install_user_defined_prefix() instead
-    """
-    pass
-#</pydoc>
-*/
-static PyObject *py_set_user_defined_prefix(size_t width, PyObject *pycb)
-{
-  PYW_GIL_CHECK_LOCKED_SCOPE();
-  if ( width == 0 || pycb == Py_None )
-  {
-    // Release old callback reference
-    Py_XDECREF(py_get_user_defined_prefix);
-
-    // ...and clear it
-    py_get_user_defined_prefix = nullptr;
-
-    // Uninstall user defind prefix
-    set_user_defined_prefix(0, nullptr);
-  }
-  else if ( PyCallable_Check(pycb) )
-  {
-    // Release old callback reference
-    Py_XDECREF(py_get_user_defined_prefix);
-
-    // Copy new callback and hold a reference
-    py_get_user_defined_prefix = pycb;
-    Py_INCREF(py_get_user_defined_prefix);
-
-    set_user_defined_prefix(width, s_py_get_user_defined_prefix);
-  }
-  else
-  {
-    Py_RETURN_FALSE;
-  }
-  Py_RETURN_TRUE;
-}
 
 //-------------------------------------------------------------------------
 PyObject *py_tag_remove(const char *str)

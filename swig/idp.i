@@ -100,7 +100,7 @@ struct undo_records_t;
 %ignore set_module_data;
 %ignore clr_module_data;
 %ignore get_module_data;
-%ignore get_modctx;
+%ignore get_eah;
 
 // @arnaud
 %ignore notify__calc_next_eas;
@@ -129,6 +129,10 @@ struct undo_records_t;
 // ph_calcrel
 %apply size_t *OUTPUT { size_t *out_consumed };
 %apply bytevec_t *vout { bytevec_t *out_relbits };
+
+%ignore processor_t::privrange_changed(range_t const &,adiff_t);
+%ignore processor_t::cvt64_supval(nodeidx_t,uchar,nodeidx_t,uchar const *,size_t);
+%ignore processor_t::cvt64_hashval(nodeidx_t,uchar,char const *,uchar const *,size_t);
 
 // ev_cvt64_supval, ev_cvt64_hashval, ev_privrange_changed
 %const_pointer_and_size(uchar, data, datlen, bytevec_t, PyBytes_as_bytevec_t, size);
@@ -226,10 +230,6 @@ struct undo_records_t;
 //-------------------------------------------------------------------------
 //                               IDB_Hooks
 //-------------------------------------------------------------------------
-%{
-#include <enum.hpp>
-%}
-
 %define_Hooks_class(IDB);
 
 %inline %{

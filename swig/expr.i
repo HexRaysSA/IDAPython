@@ -65,6 +65,9 @@
 %ignore compile_idc_text;
 %rename (compile_idc_text) py_compile_idc_text;
 
+%ignore compile_idc_snippet(char const *,char const *);
+%ignore exec_idc_script(idc_value_t *,char const *,char const *,idc_value_t const [],size_t);
+
 %cstring_output_buf_and_size_returning_charptr(
         1,
         char *buf,

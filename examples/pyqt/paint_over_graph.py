@@ -20,6 +20,7 @@ from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 
 import ida_graph
+import ida_gdl
 import ida_kernwin
 import ida_moves
 
@@ -85,7 +86,7 @@ class painter_t(QtCore.QObject):
                         if not graph.is_visible_node(dst_node):
                             continue
 
-                        edge_info = graph.get_edge(ida_graph.edge_t(src_node, dst_node))
+                        edge_info = graph.get_edge(ida_gdl.edge_t(src_node, dst_node))
                         if edge_info:
 
                             # For all horizontal edge segments satisfying the length requirements...

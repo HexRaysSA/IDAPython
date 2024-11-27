@@ -161,7 +161,7 @@ def get_bytes(ea, size):
     Get the specified number of bytes of the program.
     @param ea: program address
     @param size: number of bytes to return
-    @return: the bytes (as a str), or None in case of failure
+    @return: the bytes (as bytes object), or None in case of failure
     """
     pass
 #</pydoc>
@@ -251,66 +251,12 @@ static PyObject *py_get_strlit_contents(
 }
 
 //-------------------------------------------------------------------------
-static ea_t py_bin_search(
-        ea_t start_ea,
-        ea_t end_ea,
-        const bytevec_t &image,
-        const bytevec_t &imask,
-        int step,
-        int flags)
-{
-  if ( image.empty() )
-    return BADADDR;
-  if ( step != /* old value of BIN_SEARCH_FORWARD*/ 1
-    && step != /* new value of BIN_SEARCH_FORWARD */ 0 )
-  {
-    flags |= BIN_SEARCH_BACKWARD;
-  }
-  const size_t len = image.size();
-  const uchar *mask = imask.begin();
-  bytevec_t lmask;
-  if ( mask != nullptr )
-  {
-    if ( *mask == 0xFF )
-    {
-      // a value of '0xFF' in the first byte meant "all bytes defined". We
-      // can thus turn that into a nullptr mask.
-      mask = nullptr;
-    }
-    else
-    {
-      // some bytes defined, some bytes aren't. Those that are have a value
-      // 1 in the mask. We must turn them into 0xFF's
-      lmask.resize(len);
-      for ( size_t i = 0; i < len; ++i )
-        lmask[i] = mask[i] != 0 ? 0xFF : 0;
-      mask = lmask.begin();
-    }
-  }
-  return bin_search2(start_ea, end_ea, image.begin(), mask, len, flags);
-}
-
-//-------------------------------------------------------------------------
 static PyObject *py_print_strlit_type(int32 strtype, int flags=0)
 {
   qstring s, t;
   if ( !print_strlit_type(&s, strtype, &t, flags) )
     Py_RETURN_NONE;
   return Py_BuildValue("(ss)", s.c_str(), t.c_str());
-}
-
-//-------------------------------------------------------------------------
-static PyObject *py_get_octet(ea_t ea, uint64 v, int nbit)
-{
-  uchar octet = get_octet(&ea, &v, &nbit);
-  return Py_BuildValue("(i" PY_BV_EA "Ki)", int(uint32(octet)), bvea_t(ea), v, nbit);
-}
-
-//-------------------------------------------------------------------------
-static PyObject *py_get_8bit(ea_t ea, uint32 v, int nbit)
-{
-  uchar octet = get_8bit(&ea, &v, &nbit);
-  return Py_BuildValue("(i" PY_BV_EA "ki)", int(uint32(octet)), bvea_t(ea), v, nbit);
 }
 
 //-------------------------------------------------------------------------

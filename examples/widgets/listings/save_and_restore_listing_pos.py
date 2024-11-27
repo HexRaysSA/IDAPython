@@ -23,8 +23,7 @@ import ida_moves
 class listing_action_handler_t(ida_kernwin.action_handler_t):
     def update(self, ctx):
         is_listing = ctx.widget_type in [
-            ida_kernwin.BWN_ENUMS,
-            ida_kernwin.BWN_STRUCTS,
+            ida_kernwin.BWN_TILVIEW,
             ida_kernwin.BWN_DISASM,
             ida_kernwin.BWN_CUSTVIEW,
             ida_kernwin.BWN_PSEUDOCODE,
@@ -43,7 +42,7 @@ class save_position_ah_t(listing_action_handler_t):
     ACTION_NAME = "save_and_restore_listing_pos:save_position"
     ACTION_LABEL = "Save position"
     ACTION_SHORTCUT = "Ctrl+Shift+S"
-    HELP_TEXT = "Press %s in a 'listing' widget such as 'IDA View-A', 'Enums', 'Structures', 'Pseudocode-A', ... to remember the position" % ACTION_SHORTCUT
+    HELP_TEXT = "Press %s in a 'listing' widget such as 'IDA View-A', 'Local Types', 'Pseudocode-A', ... to remember the position" % ACTION_SHORTCUT
 
     def activate(self, ctx):
         global last_pos
@@ -59,7 +58,7 @@ class restore_position_ah_t(listing_action_handler_t):
     ACTION_NAME = "save_and_restore_listing_pos:restore_position"
     ACTION_LABEL = "Restore position"
     ACTION_SHORTCUT = "Ctrl+Shift+O"
-    HELP_TEXT = "Press %s in a 'listing' widget such as 'IDA View-A', 'Enums', 'Structures', 'Pseudocode-A', ... to restore a previously-saved position" % ACTION_SHORTCUT
+    HELP_TEXT = "Press %s in a 'listing' widget such as 'IDA View-A', 'Local Types', 'Pseudocode-A', ... to restore a previously-saved position" % ACTION_SHORTCUT
 
     def activate(self, ctx):
         global last_pos

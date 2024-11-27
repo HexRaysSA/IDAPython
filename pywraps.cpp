@@ -211,7 +211,7 @@ Py_ssize_t ida_export PyW_PySeqToEaVec(
         if ( PyLong_Check(py_item.o) )
         {
           unsigned long long ull = PyLong_AsUnsignedLongLong(py_item.o);
-          if ( ull == -1ULL && PyErr_Occurred() != nullptr )
+          if ( ull + 1 == 0 && PyErr_Occurred() != nullptr )
             return CIP_FAILED;
           ea = ea_t(ull);
         }
@@ -250,7 +250,7 @@ Py_ssize_t ida_export PyW_PySeqToEa64Vec(ea64vec_t *out, PyObject *py_list, size
         if ( PyLong_Check(py_item.o) )
         {
           unsigned long long ull = PyLong_AsUnsignedLongLong(py_item.o);
-          if ( ull == -1ULL && PyErr_Occurred() != nullptr )
+          if ( ull + 1 == 0 && PyErr_Occurred() != nullptr )
             return CIP_FAILED;
           v = uint64(ull);
         }
@@ -905,7 +905,7 @@ int ida_export idcvar_to_pyvar(
       if ( !*py_var )
       {
         double x;
-        if ( processor_t::realcvt(&x, (fpvalue_t*)&idc_var.e, (sizeof(x)/2-1)|010) != 1 )
+        if ( ieee_realcvt(&x, (fpvalue_t*)&idc_var.e, (sizeof(x)/2-1)|010) != REAL_ERROR_OK )
           INTERR(30160);
 
         *py_var = newref_t(PyFloat_FromDouble(x));
@@ -1978,6 +1978,8 @@ void ida_export idapython_unregister_hook(
   }
 #ifdef TESTABLE_BUILD
   QASSERT(30510, found);
+#else
+  qnotused(found);
 #endif // TESTABLE_BUILD
 }
 
@@ -2009,32 +2011,46 @@ bool ida_export idapython_unhook_from_notification_point(
 //-------------------------------------------------------------------------
 bool ida_export idapython_convert_cli_completions(
         qstrvec_t *out_completions,
+        qstrvec_t *out_hints,
+        qstrvec_t *out_docs,
         int *out_match_start,
         int *out_match_end,
         ref_t py_res)
 {
   bool ok = py_res != nullptr
          && PyTuple_Check(py_res.o)
-         && PyTuple_Size(py_res.o) == 3;
+         && PyTuple_Size(py_res.o) == 5;
   if ( ok )
   {
     borref_t i0(PyTuple_GetItem(py_res.o, 0));
     borref_t i1(PyTuple_GetItem(py_res.o, 1));
     borref_t i2(PyTuple_GetItem(py_res.o, 2));
-    ok = PyList_Check(i0.o) && PyLong_Check(i1.o) && PyLong_Check(i2.o);
+    borref_t i3(PyTuple_GetItem(py_res.o, 3));
+    borref_t i4(PyTuple_GetItem(py_res.o, 4));
+    // NB: Invalid i1.o and i2.o will fail the PySeqToStrVec conversion below,
+    // we don't enforce them as valid lists here to allow the Python code to
+    // return None for hints and docs.
+    ok = PyList_Check(i0.o) && PyLong_Check(i3.o) && PyLong_Check(i4.o);
     if ( ok )
     {
-      ok = PyW_PySeqToStrVec(out_completions, i0.o) > 0;
+      ssize_t num_comps = PyW_PySeqToStrVec(out_completions, i0.o);
+      ssize_t num_hints = PyW_PySeqToStrVec(out_hints, i1.o);
+      ssize_t num_docs = PyW_PySeqToStrVec(out_docs, i2.o);
+      // Clear the error that was set by PyW_PySeqToStrVec()
+      PyErr_Clear();
+      // We accept the generated result if num_comps yielded at least 1 item,
+      // and we find a matching number of elements in hints and docs. Optionally,
+      // hints and docs can be zero-element lists, or None, which means we will only
+      // display completions.
+      ok = (num_comps > 0)
+        && ((num_comps == num_hints && num_hints == num_docs)
+         || (num_hints == num_docs && num_docs == 0)
+         || (num_hints == CIP_FAILED && num_docs == CIP_FAILED));
       if ( ok )
       {
-        *out_match_start = PyLong_AsLong(i1.o);
-        *out_match_end = PyLong_AsLong(i2.o);
+        *out_match_start = PyLong_AsLong(i3.o);
+        *out_match_end = PyLong_AsLong(i4.o);
         ok = PyErr_Occurred() == nullptr;
-      }
-      else
-      {
-        // Clear the error that was set by PyW_PySeqToStrVec()
-        PyErr_Clear();
       }
     }
   }

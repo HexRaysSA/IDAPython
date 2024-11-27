@@ -1,6 +1,6 @@
 %{
-#undef HEXDSP
 hexdsp_t *get_idapython_hexdsp();
+#undef HEXDSP
 #define HEXDSP get_idapython_hexdsp()
 #include <hexrays.hpp>
 %}
@@ -55,9 +55,9 @@ SWIGINTERN void __raise_vdf(const vd_failure_t &e)
 }
 %enddef
 
-%define %method_sets_type_and_gains_ownership_of_regular_object_argument(TYPE, METHOD)
+%define %method_sets_type_and_gains_ownership_of_regular_object_argument(TYPE, METHOD, ARGNAME)
 %feature("pythonprepend") TYPE::METHOD %{
-    o = args[0]
+    o = ARGNAME
     self._ensure_cond(self.t == mop_z, "self.t == mop_z")
 %}
 %feature("pythonappend") TYPE::METHOD %{
@@ -98,6 +98,8 @@ SWIGINTERN void __raise_vdf(const vd_failure_t &e)
 %ignore cblock_t::use_curly_braces;
 %ignore casm_t::print;
 %ignore cgoto_t::print;
+%ignore ctry_t::print;
+%ignore ccatch_t::print;
 %ignore cexpr_t::is_aliasable;
 %ignore cexpr_t::like_boolean;
 %ignore cexpr_t::contains_expr;
@@ -150,23 +152,31 @@ SWIGINTERN void __raise_vdf(const vd_failure_t &e)
 %feature("nodirector") simple_graph_t;
 %ignore simple_graph_t::simple_graph_t;
 %ignore simple_graph_t::~simple_graph_t;
+%ignore simple_graph_t::ignore_edge;
+%ignore simple_graph_t::iterator;
+%ignore hexrays_node_visitor_t;
 
 %feature("nodirector") mbl_graph_t;
 %ignore mbl_graph_t::mbl_graph_t;
 %ignore mbl_graph_t::~mbl_graph_t;
+%ignore mbl_graph_t::ignore_edge;
 
 %define_hexrays_lifecycle_object(minsn_t);
 %ignore minsn_t::find_ins_op(const mop_t **, mcode_t) const;
+%ignore minsn_t::find_ins_op(const mop_t **) const;
 %ignore minsn_t::find_num_op(const mop_t **) const;
 %ignore minsn_t::set_combined;
+
+%ignore mop_t::is_constant(uint64 *) const;
+%ignore mop_t::is_constant() const;
 
 %define_hexrays_lifecycle_object(mop_t);
 %ignore mop_t::_make_strlit(qstring *);
 %template(mopvec_t) qvector<mop_t>;
-%method_sets_type_and_gains_ownership_of_regular_object_argument(mop_t, _make_cases)
-%method_sets_type_and_gains_ownership_of_regular_object_argument(mop_t, _make_callinfo)
-%method_sets_type_and_gains_ownership_of_regular_object_argument(mop_t, _make_pair)
-%method_sets_type_and_gains_ownership_of_regular_object_argument(mop_t, _make_insn)
+%method_sets_type_and_gains_ownership_of_regular_object_argument(mop_t, _make_cases, _cases)
+%method_sets_type_and_gains_ownership_of_regular_object_argument(mop_t, _make_callinfo, fi)
+%method_sets_type_and_gains_ownership_of_regular_object_argument(mop_t, _make_pair, _pair)
+%method_sets_type_and_gains_ownership_of_regular_object_argument(mop_t, _make_insn, ins)
 
 %template(mcallargs_t) qvector<mcallarg_t>;
 
@@ -174,19 +184,21 @@ SWIGINTERN void __raise_vdf(const vd_failure_t &e)
 
 %ignore mblock_t::mblock_t;
 %ignore mblock_t::find_first_use(mlist_t *, const minsn_t *, const minsn_t *, maymust_t) const;
+%ignore mblock_t::find_first_use(mlist_t *, const minsn_t *, const minsn_t *) const;
 %ignore mblock_t::find_redefinition(const mlist_t &, const minsn_t *, const minsn_t *, maymust_t) const;
+%ignore mblock_t::find_redefinition(const mlist_t &, const minsn_t *, const minsn_t *) const;
 %ignore mblock_t::reserved;
 %ignore mblock_t::vdump_block;
 // Note: we cannot use %delobject here, as that would disown
 // the block itself, not the instruction.
 %feature("pythonappend") mblock_t::insert_into_block %{
-    mn = args[0]
+    mn = nm
     mn._maybe_disown_and_deregister()
 %}
 // Note: we could be using %newobject here, but for the sake of
 // symmetry with 'insert_into_block', let's go with "pythonappend".
 %feature("pythonprepend") mblock_t::remove_from_block %{
-    mn = args[0]
+    mn = m
 %}
 %feature("pythonappend") mblock_t::remove_from_block %{
     if mn:
@@ -231,6 +243,8 @@ SWIGINTERN void __raise_vdf(const vd_failure_t &e)
 %ignore mba_item_iterator_t;
 %ignore range_chunk_iterator_t;
 %ignore mba_ranges_t::range_contains;
+
+%ignore hexrays_failure_t::hexrays_failure_t(merror_t,ea_t);
 
 %newobject gen_microcode;
 %define_hexrays_lifecycle_object(mba_t);
@@ -910,6 +924,10 @@ typedef int iterator_word;
 %template(qvector_lvar_t) qvector<lvar_t>;
 %template(qvector_carg_t) qvector<carg_t>;
 %template(qvector_ccase_t) qvector<ccase_t>;
+%template(qvector_catchexprs_t) qvector<catchexpr_t>;
+%template(qvector_ccatchvec_t) qvector<ccatch_t>;
+%uncomparable_elements_qvector(cblock_pos_t, cblock_posvec_t);
+
 %template(lvar_saved_infos_t) qvector<lvar_saved_info_t>;
 %template(ui_stroff_ops_t) qvector<ui_stroff_op_t>;
 
@@ -965,6 +983,9 @@ void qswap(cinsn_t &a, cinsn_t &b);
 %ignore get_widget_vdui;
 %rename (get_widget_vdui) py_get_widget_vdui;
 
+%ignore decompile_func(func_t *,hexrays_failure_t *);
+%ignore  decompile_func(func_t *);
+
 %feature("pythonappend") decompile_func %{
   if val.__deref__() is None:
       val = None
@@ -972,7 +993,6 @@ void qswap(cinsn_t &a, cinsn_t &b);
 
 
 //-------------------------------------------------------------------------
-#if SWIG_VERSION == 0x40000 || SWIG_VERSION == 0x40001
 %typemap(out) cfuncptr_t {}
 %typemap(ret) cfuncptr_t
 {
@@ -991,9 +1011,6 @@ void qswap(cinsn_t &a, cinsn_t &b);
   hexrays_register_python_clearable_instance(ni, hxclr_cfuncptr);
   $result = SWIG_NewPointerObj(ni, $1_descriptor, SWIG_POINTER_OWN | 0);
 }
-#else
-#error Ensure cfuncptr_t wrapping is compatible with this version of SWIG
-#endif
 
 //---------------------------------------------------------------------
 %define %python_callback_in(CB)

@@ -10,7 +10,7 @@ description:
   After running this script:
 
     * select some text in one of the listing widgets (i.e.,
-      "IDA View-*", "Enums", "Structures", "Pseudocode-*")
+      "IDA View-*", "Local Types", "Pseudocode-*")
     * press Ctrl+Shift+S to dump the selection
 """
 
@@ -50,8 +50,7 @@ class dump_selection_handler_t(ida_kernwin.action_handler_t):
     def update(self, ctx):
         ok_widgets = [
             ida_kernwin.BWN_DISASM,
-            ida_kernwin.BWN_STRUCTS,
-            ida_kernwin.BWN_ENUMS,
+            ida_kernwin.BWN_TILVIEW,
             ida_kernwin.BWN_PSEUDOCODE,
         ]
         return ida_kernwin.AST_ENABLE_FOR_WIDGET \
@@ -78,7 +77,7 @@ if ida_kernwin.register_action(
 # dump current selection
 p0 = ida_kernwin.twinpos_t()
 p1 = ida_kernwin.twinpos_t()
-view = ida_kernwin.get_current_viewer()
+view = ida_kernwin.get_last_widget(ida_kernwin.IWID_ANY_LISTING)
 if ida_kernwin.read_selection(view, p0, p1):
     lines = get_widget_lines(view, p0, p1)
     print("\n".join(lines))

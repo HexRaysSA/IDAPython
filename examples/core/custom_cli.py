@@ -19,6 +19,7 @@ description:
 
 import ida_kernwin
 import ida_idaapi
+import traceback
 
 class mycli_t(ida_kernwin.cli_t):
     flags = 0
@@ -40,12 +41,28 @@ class mycli_t(ida_kernwin.cli_t):
         "bongiorno",
     ]
 
-    def OnCompleteLine(self, prefix, n, line, prefix_start):
-        print("OnCompleteLine: prefix=%s n=%d line=%s prefix_start=%d" % (prefix, n, line, prefix_start))
-        if prefix == "bon":
-            if n < len(self.completions):
-                return self.completions[n]
-        return None
+    def OnFindCompletions(self, line, x):
+        """
+        The user pressed Tab. Return a list of completions
+
+        This callback is optional.
+
+        @param line: the current line (string)
+        @param x: the index where the cursor is (int)
+
+        @return: None if no completion could be generated, otherwise a tuple:
+            (completions : Sequence[str], hints : Sequence[str], docs: Sequence[str], 
+              match_start: int, match_end: int)
+        """
+        try:
+            print("OnFindCompletions: line=%s x=%d" % (line, x))
+            # self.debug("__call__(line=%s, x=%s)", line, x)
+            uline = line
+            if line[x-3:x]=="bon":
+                return (self.completions, [], [], x-3, x)
+        except:
+            print("OnFindCompletions got exception:\n%s", traceback.format_exc())
+            pass
 
 # -----------------------------------------------------------------------
 def nw_handler(code, old=0):

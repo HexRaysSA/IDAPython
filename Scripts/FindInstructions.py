@@ -27,7 +27,6 @@ import ida_kernwin
 import ida_bytes
 import ida_ua
 import ida_ida
-import ida_search
 import ida_funcs
 
 import idautils
@@ -76,10 +75,10 @@ def FindInstructions(instr, asm_where=None):
 
     # find all binary strings
     print("Searching for: [%s]" % bin_str)
-    ea = ida_ida.cvar.inf.min_ea
+    ea = ida_ida.inf_get_min_ea()
     ret = []
     while True:
-        ea = ida_search.find_binary(ea, ida_idaapi.BADADDR, bin_str, 16, ida_search.SEARCH_DOWN)
+        ea = ida_bytes.find_bytes(bin_str, ea, radix=16)
         if ea == ida_idaapi.BADADDR:
             break
         ret.append(ea)

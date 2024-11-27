@@ -253,20 +253,20 @@ def read_selection(view, p0, p1):
 */
 
 //------------------------------------------------------------------------
-static PyObject *py_msg(PyObject *o)
+static PyObject *py_msg(PyObject *message)
 {
   const char *utf8 = nullptr;
   ref_t py_utf8;
-  if ( PyUnicode_Check(o) )
+  if ( PyUnicode_Check(message) )
   {
-    py_utf8 = newref_t(PyUnicode_AsUTF8String(o));
+    py_utf8 = newref_t(PyUnicode_AsUTF8String(message));
     if ( PyErr_Occurred() != nullptr )
       return nullptr;
     utf8 = PyString_AsString(py_utf8.o);
   }
-  else if ( PyString_Check(o) )
+  else if ( PyString_Check(message) )
   {
-    utf8 = PyString_AsString(o);
+    utf8 = PyString_AsString(message);
   }
   else
   {
@@ -555,23 +555,23 @@ def execute_sync(callable, reqf):
 #</pydoc>
 */
 //------------------------------------------------------------------------
-static int py_execute_sync(PyObject *py_callable, int reqf)
+static ssize_t py_execute_sync(PyObject *py_callable, int reqf)
 {
   PYW_GIL_CHECK_LOCKED_SCOPE();
-  int rc = -1;
+  ssize_t rc = -1;
   // Callable?
   if ( PyCallable_Check(py_callable) )
   {
     struct py_exec_request_t : exec_request_t
     {
       ref_t py_callable;
-      virtual int idaapi execute() override
+      virtual ssize_t idaapi execute() override
       {
         PYW_GIL_GET;
         newref_t py_result(PyObject_CallFunctionObjArgs(py_callable.o, nullptr));
-        int ret = !py_result || !PyLong_Check(py_result.o)
-                ? -1
-                : PyLong_AsLong(py_result.o);
+        ssize_t ret = !py_result || !PyLong_Check(py_result.o)
+                    ? -1
+                    : PyLong_AsLong(py_result.o);
         // if the requesting thread decided not to wait for the request to
         // complete, we have to self-destroy, nobody else will do it
         if ( (code & MFF_NOWAIT) != 0 )
@@ -1156,11 +1156,11 @@ def msg(message):
     """
     pass
 
-def warning(message):
+def warning(format):
     """
     Display a message in a message box
 
-    @param message: message to print (formatting is done in Python)
+    @param format: message to print (formatting is done in Python)
 
     This function can be used to debug IDAPython scripts
     The user will be able to hide messages if they appear twice in a row on

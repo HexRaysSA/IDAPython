@@ -204,13 +204,16 @@ with open(args.input) as f:
                             "printf(\"swig/python detected a memory leak",
                             (
                                 "#ifdef TESTABLE_BUILD",
-                                "      if ( name == nullptr || strcmp(name, \"std::out_of_range *\") != 0 )",
-                                "        abort();",
+                                "      /* disabled because of https://github.com/swig/swig/issues/2638#issuecomment-1991845894 */",
+                                "      // if ( name == nullptr || strcmp(name, \"std::out_of_range *\") != 0 )",
+                                "        // abort();",
                                 "#endif",
                             ),
                         ),
                     ))
+
             line = line.replace(", ...arg0)", ", ...)")
+            line = line.replace(",...arg0)", ",...)")
         else:
             if line.find("(args") > -1:
                 current_function_uses_args = True

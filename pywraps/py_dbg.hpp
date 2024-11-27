@@ -250,7 +250,7 @@ static PyObject *py_set_reg_val(thid_t tid, int regidx, PyObject *o)
     PyErr_SetString(PyExc_Exception, "No debugger loaded");
     return nullptr;
   }
-  if ( regidx < 0 || regidx >= dbg->nregs )
+  if ( regidx < 0 || regidx >= dbg->nregisters )
   {
     qstring buf;
     buf.sprnt("Bad register index: %d", regidx);
@@ -323,7 +323,7 @@ static regvals_t *py_get_reg_vals(thid_t tid, int clsmask=-1)
   regvals_t *rvs = new regvals_t();
   if ( dbg != nullptr )
   {
-    rvs->resize(dbg->nregs);
+    rvs->resize(dbg->nregisters);
     if ( get_reg_vals(tid, clsmask, rvs->begin()) != DRC_OK )
       rvs->clear();
   }

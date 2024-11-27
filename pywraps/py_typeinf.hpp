@@ -87,17 +87,12 @@ static bool py_apply_type(
   PYW_GIL_CHECK_LOCKED_SCOPE();
   bool rc;
   SWIG_PYTHON_THREAD_BEGIN_ALLOW;
-  struc_t *sptr;
-  member_t *mptr = get_member_by_id(ea, &sptr);
+  tinfo_t udttif;
+  udm_t udm;
+  ssize_t idx = udttif.get_udm_by_tid(&udm, ea);
   if ( type == nullptr || type[0] == '\0' )
   {
-    if ( mptr != nullptr )
-    {
-      rc = mptr->has_ti();
-      if ( rc )
-        del_member_tinfo(sptr, mptr);
-    }
-    else
+    if ( idx == -1 )
     {
       rc = has_ti(ea);
       if ( rc )
@@ -110,8 +105,8 @@ static bool py_apply_type(
     rc = tif.deserialize(ti, &type, &fields, nullptr);
     if ( rc )
     {
-      if ( mptr != nullptr )
-        rc = set_member_tinfo(sptr, mptr, 0, tif, 0) > SMT_FAILED;
+      if ( idx != -1 )
+        rc = udttif.set_udm_type(idx, tif) >= TERR_OK;
       else
         rc = apply_tinfo(ea, tif, flags);
     }
@@ -583,6 +578,24 @@ static PyObject *py_get_numbered_type(const til_t *til, uint32 ordinal)
     return Py_BuildValue("(" PY_BV_TYPE PY_BV_FIELDS "s" PY_BV_FIELDCMTS "i)", type, fields, cmt, fieldcmts, sclass);
   else
     Py_RETURN_NONE;
+}
+
+//-------------------------------------------------------------------------
+static tinfo_code_t py_set_numbered_type(
+        til_t *ti,
+        uint32 ordinal,
+        int ntf_flags,
+        const char *name,
+        const type_t *type,
+        const p_list *fields=nullptr,
+        const char *cmt=nullptr,
+        const p_list *fldcmts=nullptr,
+        const sclass_t *sclass=nullptr)
+{
+  tinfo_t tif;
+  return tif.deserialize(ti, &type, &fields, &fldcmts, cmt)
+       ? tif.set_numbered_type(ti, ordinal, ntf_flags, name)
+       : TERR_BAD_TYPE;
 }
 
 //</inline(py_typeinf)>

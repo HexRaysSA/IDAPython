@@ -178,9 +178,9 @@ static PyObject *dbg_get_registers()
   if ( dbg == nullptr )
     Py_RETURN_NONE;
 
-  PyObject *py_list = PyList_New(dbg->nregs);
+  PyObject *py_list = PyList_New(dbg->nregisters);
 
-  for ( int i=0; i < dbg->nregs; i++ )
+  for ( int i=0; i < dbg->nregisters; i++ )
   {
     register_info_t &ri = dbg->regs(i);
     PyObject *py_bits;
@@ -247,7 +247,7 @@ def dbg_read_memory(ea, sz):
     """
     Reads from the debugee's memory at the specified ea
     @return:
-        - The read buffer (as a string)
+        - The read buffer (as bytes)
         - Or None on failure
     """
     pass

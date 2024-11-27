@@ -17,7 +17,7 @@ import ida_frame
 import ida_funcs
 import ida_ida
 import ida_kernwin
-import ida_struct
+import ida_typeinf
 import ida_ua
 
 class list_stkvar_xrefs_ah_t(ida_kernwin.action_handler_t):
@@ -29,10 +29,13 @@ class list_stkvar_xrefs_ah_t(ida_kernwin.action_handler_t):
             result = ida_kernwin.get_highlight(v)
             if result:
                 stkvar_name, _ = result
-                frame = ida_frame.get_frame(cur_ea)
-                sptr = ida_struct.get_struc(frame.id)
-                mptr = ida_struct.get_member_by_name(sptr, stkvar_name)
-                if mptr:
+                frame = ida_typeinf.tinfo_t()
+                pfn = ida_funcs.get_func(cur_ea)
+                frame.get_func_frame(pfn)
+                stkvar = ida_typeinf.udm_t()
+                stkvar.name = stkvar_name
+                stkvar_idx = frame.find_udm(stkvar, ida_typeinf.STRMEM_NAME)
+                if stkvar_idx >= 0:
                     for ea in pfn:
                         F = ida_bytes.get_flags(ea)
                         for n in range(ida_ida.UA_MAXOP):
@@ -42,7 +45,7 @@ class list_stkvar_xrefs_ah_t(ida_kernwin.action_handler_t):
                             if not ida_ua.decode_insn(insn, ea):
                                 continue
                             v = ida_frame.calc_stkvar_struc_offset(pfn, insn, n)
-                            if v >= mptr.soff and v < mptr.eoff:
+                            if v >= stkvar.begin()/8 and v < stkvar.end()/8:
                                 print("Found xref at 0x%08x, operand #%d" % (ea, n))
                 else:
                     print("No stack variable named \"%s\"" % stkvar_name)

@@ -537,8 +537,8 @@ class ShortcutFinder(ast.NodeVisitor):
 
             value = None
             # save strings
-            if isinstance(node.value, ast.Str):
-                value = node.value.s
+            if isinstance(node.value, ast.Constant):
+                value = node.value.value
             # save also lists of names, in case they are class names
             elif isinstance(node.value, ast.List):
                 if all(isinstance(elt, ast.Name) for elt in node.value.elts):
@@ -588,8 +588,8 @@ class ShortcutFinder(ast.NodeVisitor):
                 del scope[name]
 
     def _find_values(self, arg):
-        if isinstance(arg, ast.Str):
-            return [arg.s]
+        if isinstance(arg, ast.Constant):
+            return [arg.value]
 
         # single variable
         if isinstance(arg, ast.Name):
@@ -870,11 +870,11 @@ class TemplateReplacer(object):
 
     def _output_text(self, text):
         return ast.Expr(value=self._call(self._dot("_mm_f", "write"),
-                                         [ast.Str(text)]))
+                                         [ast.Constant(text)]))
 
     def _output_eval(self, expr):
         # eval(expr)
-        value = self._call(ast.Name("eval", ast.Load()), [ast.Str(expr)])
+        value = self._call(ast.Name("eval", ast.Load()), [ast.Constant(expr)])
         # str(eval(expr))
         valueStr = self._call(ast.Name("str", ast.Load()), [value])
         # _mm_f.write(str(eval(expr)))

@@ -169,7 +169,7 @@ def main():
         return
 
     # get all debug namesp
-    dn = ida_name.get_debug_names(ida_ida.cvar.inf.min_ea, ida_ida.cvar.inf.max_ea)
+    dn = ida_name.get_debug_names(ida_ida.inf_get_min_ea(), ida_ida.inf_get_max_ea())
     # initiate a nearest name search (using debug names)
     nn = ida_name.NearestName(dn)
 

@@ -70,7 +70,7 @@ static PyObject *py_get_import_module_name(int mod_index)
 def enum_import_names(mod_index, callback):
     """
     Enumerate imports from a specific module.
-    Please refer to ex_imports.py example.
+    Please refer to list_imports.py example.
 
     @param mod_index: The module index
     @param callback: A callable object that will be invoked with an ea, name (could be None) and ordinal.

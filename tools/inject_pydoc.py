@@ -277,7 +277,7 @@ class location_t(object):
                             last_line + len(node.decorator_list),
                             location_t._max_lineno(node.args))
 
-        elif isinstance(node, (ast.Assign, ast.AugAssign)):
+        elif isinstance(node, (ast.Assign, ast.AugAssign, ast.AnnAssign)):
             last_line = max(last_line,
                             location_t._max_lineno(node))
 
@@ -336,6 +336,15 @@ KIND_FUNCTION = "function"
 KIND_VARIABLE = "variable"
 KIND_DEFINE = "define"
 KIND_FILE = "module"
+ALL_KINDS = [
+    KIND_CLASS,
+    KIND_UNION,
+    KIND_STRUCT,
+    KIND_FUNCTION,
+    KIND_VARIABLE,
+    KIND_DEFINE,
+    KIND_FILE,
+]
 
 class repo_t(object):
     def __init__(self, storage, ident):
@@ -426,6 +435,9 @@ class pydoc_visitor_t(ast.NodeVisitor):
 
         pass # no call to generic_visit into its body
 
+    def visit_AnnAssign(self, node):
+        return self.visit_Assign(node)
+
     def visit_Assign(self, node):
         if self.in_func:
             return
@@ -437,9 +449,12 @@ class pydoc_visitor_t(ast.NodeVisitor):
         # only syntax accepted: var = expr or self.member = expr
         # (as opposed to v1 = v2 = expr, or var += expr, or obj.member = expr)
 
-        if len(node.targets) != 1:
-            return
-        target = node.targets[0]
+        if isinstance(node, ast.Assign):
+            if len(node.targets) != 1:
+                return
+            target = node.targets[0]
+        else:
+            target = node.target
 
         if isinstance(target, ast.Attribute):
             if not isinstance(target.value, ast.Name):
@@ -480,7 +495,7 @@ class pydoc_visitor_t(ast.NodeVisitor):
         if self.in_func:
             return
 
-        if isinstance(node.value, ast.Str):
+        if isinstance(node.value, ast.Constant):
             if hasattr(node, "end_lineno"):
                 line_before = node.lineno - 1   # "lineno" is the start line
             else:
@@ -497,7 +512,7 @@ class pydoc_visitor_t(ast.NodeVisitor):
                          % (self.path, node.lineno, self.assign_warn))
                     return
 
-                docstring = self._clean_docstring(node.value.s)
+                docstring = self._clean_docstring(node.value.value)
 
                 # update the info structure already collected on Assign
 
@@ -1257,7 +1272,7 @@ class pydoc_patcher_t(object):
                     break
 
             if doxy.module is not None:
-                f.write("\"\"\"\n")
+                f.write("r\"\"\"\n")
                 f.write(doxy.module)
                 f.write("\"\"\"\n")
 
@@ -1306,7 +1321,7 @@ class pydoc_patcher_t(object):
                         # no prototypes from doxygen; also, avoid lines
                         # wrapped by textwrap to be interpreted as
                         # prototypes by accident
-                        doxy_cmt.parse(doxy_info.doc, parse_prototypes=False)
+                        doxy_cmt.parse(doxy_info.doc, parse_prototypes=False, as_kind=doxy_kind)
                         # for functions, doxy_info.extra = C++ parameter types
                         doxy_cmt.add_cpp_params(doxy_info.extra)
 
@@ -1415,7 +1430,7 @@ class pydoc_patcher_t(object):
             return self.output
 
         def visit(self, node):
-            if not isinstance(node, (ast.Str, ast.Expr)):
+            if not isinstance(node, (ast.Constant, ast.Expr)):
                 self.output.append(node.__class__.__name__)
 
             super(pydoc_patcher_t.simplifier_t, self).generic_visit(node)
@@ -1829,7 +1844,8 @@ class structured_comment_t(object):
         self.prototypes  = []
         self.ctypes      = {}  # collected for only one prototype in Doxygen
 
-    def parse(self, text, parse_prototypes=True):
+    def parse(self, text, parse_prototypes=True, as_kind=None):
+        assert (as_kind is None) or (as_kind in ALL_KINDS)
         self.reset()
         self.parsed = True
 
@@ -1843,7 +1859,7 @@ class structured_comment_t(object):
             state = self.PAT_PROTO
 
         for line in lines:
-            pat  = self._pattern(line, prev, parse_prototypes)
+            pat  = self._pattern(line, prev, parse_prototypes, as_kind=as_kind)
             prev = pat
 
             if pat == self.PAT_TITLE:
@@ -1878,7 +1894,11 @@ class structured_comment_t(object):
             if pat in (self.PAT_PROTO, self.PAT_PARAM, self.PAT_RETURN):
                 state = pat
 
-    def _pattern(self, line, prev, parse_prototypes):
+    def _pattern(self, line, prev, parse_prototypes, as_kind=None):
+        assert (as_kind is None) or (as_kind in ALL_KINDS)
+        if as_kind == KIND_VARIABLE:
+            return self.PAT_TEXT
+
         # may also return extra information in self.parts
 
         indent = self.RE_INDENT.match(line).group(0)

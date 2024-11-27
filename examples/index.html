@@ -297,69 +297,6 @@ There are 2 ways to use this example:
       </ul>
         </div>
       </div>
-      <div class="example-entry collapsed-entry" name="bin_search">
-        <div>
-          <span class="exp-col expander">&#x25B9;</span>
-          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
-        <a href="core/bin_search.py">bin_search</a>: <i>Showcasing `ida_bytes.bin_search`</i>
-        </div>
-        <div class="details" id="DIV_bin_search">
-
-<pre>
-IDAPython's ida_bytes.bin_search function is pretty powerful,
-but can be tough to figure out at first. This example introduces
-
- * `ida_bytes.bin_search`, and
- * `ida_bytes.parse_binpat_str`
-
-in order to implement a simple replacement for the
-'Search > Sequence of bytes...' dialog, that lets users
-search for sequences of bytes that compose string literals
-in the binary file (either in the default 1-byte-per-char
-encoding, or as UTF-16.)
-</pre>
-
-          <ul>
-            <li>Category: core</li>
-            <li>Summary: Showcasing `ida_bytes.bin_search`</li>
-            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/bin_search.py">GitHub</a></li>
-
-            <li>Shortcut:
-            Ctrl+Shift+S
-            </li>
-
-
-            <li>APIs used
-              <ul>
-                <li>ida_bytes.BIN_SEARCH_FORWARD</li>
-                <li>ida_bytes.BIN_SEARCH_NOBREAK</li>
-                <li>ida_bytes.BIN_SEARCH_NOSHOW</li>
-                <li>ida_bytes.bin_search</li>
-                <li>ida_bytes.compiled_binpat_vec_t</li>
-                <li>ida_bytes.parse_binpat_str</li>
-                <li>ida_ida.inf_get_max_ea</li>
-                <li>ida_idaapi.BADADDR</li>
-                <li>ida_kernwin.AST_DISABLE_FOR_WIDGET</li>
-                <li>ida_kernwin.AST_ENABLE_FOR_WIDGET</li>
-                <li>ida_kernwin.BWN_DISASM</li>
-                <li>ida_kernwin.Form</li>
-                <li>ida_kernwin.Form.ChkGroupControl</li>
-                <li>ida_kernwin.Form.StringInput</li>
-                <li>ida_kernwin.action_desc_t</li>
-                <li>ida_kernwin.action_handler_t</li>
-                <li>ida_kernwin.get_screen_ea</li>
-                <li>ida_kernwin.jumpto</li>
-                <li>ida_kernwin.register_action</li>
-                <li>ida_nalt.BPU_1B</li>
-                <li>ida_nalt.BPU_2B</li>
-                <li>ida_nalt.get_default_encoding_idx</li>
-              </ul>
-            </li>
-
-
-      </ul>
-        </div>
-      </div>
       <div class="example-entry collapsed-entry" name="colorize_disassembly_on_the_fly">
         <div>
           <span class="exp-col expander">&#x25B9;</span>
@@ -673,7 +610,7 @@ the corresponding text.
 After running this script:
 
   * select some text in one of the listing widgets (i.e.,
-    "IDA View-*", "Enums", "Structures", "Pseudocode-*")
+    "IDA View-*", "Local Types", "Pseudocode-*")
   * press Ctrl+Shift+S to dump the selection
 </pre>
 
@@ -693,12 +630,12 @@ After running this script:
                 <li>ida_kernwin.AST_DISABLE_FOR_WIDGET</li>
                 <li>ida_kernwin.AST_ENABLE_FOR_WIDGET</li>
                 <li>ida_kernwin.BWN_DISASM</li>
-                <li>ida_kernwin.BWN_ENUMS</li>
                 <li>ida_kernwin.BWN_PSEUDOCODE</li>
-                <li>ida_kernwin.BWN_STRUCTS</li>
+                <li>ida_kernwin.BWN_TILVIEW</li>
+                <li>ida_kernwin.IWID_ANY_LISTING</li>
                 <li>ida_kernwin.action_desc_t</li>
                 <li>ida_kernwin.action_handler_t</li>
-                <li>ida_kernwin.get_current_viewer</li>
+                <li>ida_kernwin.get_last_widget</li>
                 <li>ida_kernwin.get_viewer_user_data</li>
                 <li>ida_kernwin.l_compare2</li>
                 <li>ida_kernwin.linearray_t</li>
@@ -746,6 +683,61 @@ After running this script, try switching to the IDC interpreter
               <ul>
                 <li>ida_expr.VT_LONG</li>
                 <li>ida_expr.add_idc_func</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="find_string">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/find_string.py">find_string</a>: <i>Showcasing `ida_bytes.find_string`</i>
+        </div>
+        <div class="details" id="DIV_find_string">
+
+<pre>
+IDAPython's ida_bytes.find_string can be used to implement
+a simple replacement for the 'Search > Sequence of bytes...'
+dialog, that lets users search for sequences of bytes that
+compose string literals in the binary file (either in the
+default 1-byte-per-char encoding, or as UTF-16.)
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Showcasing `ida_bytes.find_string`</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/find_string.py">GitHub</a></li>
+
+            <li>Shortcut:
+            Ctrl+Shift+S
+            </li>
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_bytes.BIN_SEARCH_FORWARD</li>
+                <li>ida_bytes.BIN_SEARCH_NOBREAK</li>
+                <li>ida_bytes.BIN_SEARCH_NOSHOW</li>
+                <li>ida_bytes.find_string</li>
+                <li>ida_ida.inf_get_max_ea</li>
+                <li>ida_idaapi.BADADDR</li>
+                <li>ida_kernwin.AST_DISABLE_FOR_WIDGET</li>
+                <li>ida_kernwin.AST_ENABLE_FOR_WIDGET</li>
+                <li>ida_kernwin.BWN_DISASM</li>
+                <li>ida_kernwin.Form</li>
+                <li>ida_kernwin.Form.ChkGroupControl</li>
+                <li>ida_kernwin.Form.StringInput</li>
+                <li>ida_kernwin.action_desc_t</li>
+                <li>ida_kernwin.action_handler_t</li>
+                <li>ida_kernwin.get_screen_ea</li>
+                <li>ida_kernwin.jumpto</li>
+                <li>ida_kernwin.register_action</li>
+                <li>ida_nalt.BPU_1B</li>
+                <li>ida_nalt.BPU_2B</li>
+                <li>ida_nalt.get_default_encoding_idx</li>
               </ul>
             </li>
 
@@ -1159,7 +1151,6 @@ next_to() (or higher level utilities such as idautils.XrefsTo)
                 <li>ida_bytes.get_flags</li>
                 <li>ida_bytes.is_stkvar</li>
                 <li>ida_frame.calc_stkvar_struc_offset</li>
-                <li>ida_frame.get_frame</li>
                 <li>ida_funcs.get_func</li>
                 <li>ida_ida.UA_MAXOP</li>
                 <li>ida_kernwin.AST_DISABLE_FOR_WIDGET</li>
@@ -1171,8 +1162,9 @@ next_to() (or higher level utilities such as idautils.XrefsTo)
                 <li>ida_kernwin.get_highlight</li>
                 <li>ida_kernwin.get_screen_ea</li>
                 <li>ida_kernwin.register_action</li>
-                <li>ida_struct.get_member_by_name</li>
-                <li>ida_struct.get_struc</li>
+                <li>ida_typeinf.STRMEM_NAME</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udm_t</li>
                 <li>ida_ua.decode_insn</li>
                 <li>ida_ua.insn_t</li>
               </ul>
@@ -3495,7 +3487,7 @@ then add our own markers along.
 
             <li>APIs used
               <ul>
-                <li>ida_graph.edge_t</li>
+                <li>ida_gdl.edge_t</li>
                 <li>ida_graph.get_graph_viewer</li>
                 <li>ida_graph.get_viewer_graph</li>
                 <li>ida_graph.point_t</li>
@@ -4300,9 +4292,8 @@ Note that, contrary to actual bookmarks, this example:
                 <li>ida_kernwin.AST_ENABLE_FOR_WIDGET</li>
                 <li>ida_kernwin.BWN_CUSTVIEW</li>
                 <li>ida_kernwin.BWN_DISASM</li>
-                <li>ida_kernwin.BWN_ENUMS</li>
                 <li>ida_kernwin.BWN_PSEUDOCODE</li>
-                <li>ida_kernwin.BWN_STRUCTS</li>
+                <li>ida_kernwin.BWN_TILVIEW</li>
                 <li>ida_kernwin.action_desc_t</li>
                 <li>ida_kernwin.action_handler_t</li>
                 <li>ida_kernwin.custom_viewer_jump</li>

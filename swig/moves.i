@@ -101,3 +101,8 @@
 }
 
 %include "moves.hpp"
+
+%pythoncode %{
+#<pycode(py_moves_end)>
+#</pycode(py_moves_end)>
+%}

@@ -54,10 +54,6 @@ class processor_t(IDP_Hooks):
         """
         return '\x01'.join(map(lambda t: '\x01'.join(t), zip(self.plnames, self.psnames)))
 
-    def get_uFlag(self):
-        """Use this utility function to retrieve the 'uFlag' global variable"""
-        return ida_ua.cvar.uFlag
-
     def get_auxpref(self, insn):
         """This function returns insn.auxpref value"""
         return insn.auxpref
@@ -428,9 +424,5 @@ class __ph(object):
     version = property(lambda self: ph_get_version())
 
 ph = __ph()
-
-class _idp_cvar_t:
-    ash = property(lambda self: get_ash())
-cvar = _idp_cvar_t()
 
 #</pycode(py_idp)>

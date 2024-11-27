@@ -1,6 +1,5 @@
 %{
 #include <typeinf.hpp>
-#include <struct.hpp>
 %}
 
 %constant bmask64_t DEFMASK64 = bmask64_t(-1);
@@ -23,6 +22,8 @@
 %ignore get_int_type_bit;
 %ignore get_unk_type_bit;
 %ignore tns;
+%ignore get_frame_var;
+%ignore tinfo_get_func_frame;
 
 %ignore til_t::syms;
 %ignore til_t::types;
@@ -47,7 +48,18 @@
 %ignore argloc_t::consume_scattered(scattered_aloc_t *p);
 %ignore argpart_t::copy_from;
 
-%ignore get_numbered_type(const til_t *, uint32, const type_t **, const p_list **, const char **, const p_list **, sclass_t *);
+%ignore get_idainfo_by_type(size_t *,flags64_t *,opinfo_t *,tinfo_t const &);
+
+// because default args!
+%ignore ::get_numbered_type(const til_t *, uint32, const type_t **, const p_list **, const char **, const p_list **, sclass_t *);
+%ignore ::get_numbered_type(const til_t *, uint32, const type_t **, const p_list **, const char **, const p_list **);
+%ignore ::get_numbered_type(const til_t *, uint32, const type_t **, const p_list **, const char **);
+%ignore ::get_numbered_type(const til_t *, uint32, const type_t **, const p_list **);
+%ignore ::get_numbered_type(const til_t *, uint32, const type_t **);
+%ignore ::get_numbered_type(const til_t *, uint32);
+%ignore tinfo_t::get_innermost_udm(uint64, size_t *) const;
+%ignore tinfo_t::get_innermost_udm(uint64) const;
+%ignore tinfo_t::get_innermost_member_type(uint64) const;
 %rename (get_numbered_type) py_get_numbered_type;
 
 %ignore NTF_NOSYNC;
@@ -68,6 +80,10 @@
 %ignore get_named_type64;
 %rename (get_named_type64) py_get_named_type64;
 %rename ("%s") tinfo_t::get_named_type;
+
+%ignore set_numbered_type;
+%rename (set_numbered_type) py_set_numbered_type;
+%rename ("%s") tinfo_t::set_numbered_type;
 
 %rename (print_decls) py_print_decls;
 %ignore print_decls;
@@ -135,24 +151,28 @@
 %ignore name_requires_qualifier;
 %ignore tinfo_visitor_t::level;
 %ignore tinfo_t::serialize(qtype *, qtype *, qtype *, int) const;
+%ignore tinfo_t::get_stkvar(sval_t *, const insn_t &, const op_t *, sval_t);
 %ignore tinfo_t::deserialize(const til_t *, const qtype *, const qtype *, const qtype *, const char *);
 %ignore tinfo_get_innermost_udm;
 %ignore save_tinfo2;
-// Let's declare our own version of `deserialize_tinfo2` before
+// Let's declare our own version of `deserialize_tinfo` before
 // SWiG hits the one that's in `typeinf.hpp` (and cannot, alas,
 // enjoy the addition of the default value.)
-%rename (deserialize_tinfo) deserialize_tinfo2;
 %inline %{
-idaman bool ida_export deserialize_tinfo2(tinfo_t *tif, const til_t *til, const type_t **ptype, const p_list **pfields, const p_list **pfldcmts, const char *cmt=nullptr);
+idaman bool ida_export deserialize_tinfo(tinfo_t *tif, const til_t *til, const type_t **ptype, const p_list **pfields, const p_list **pfldcmts, const char *cmt=nullptr);
 %}
 %ignore deserialize_tinfo;
-%ignore deserialize_tinfo2;
 %ignore get_udm_by_tid(tinfo_t *tif, udm_t *udm, tid_t tid);
 %ignore get_edm_by_tid(tinfo_t *tif, edm_t *edm, tid_t tid);
 %ignore get_type_by_tid(tinfo_t *tif, tid_t tid);
 %ignore get_tinfo_by_edm_name(tinfo_t *tif, til_t *til, const char *mname);
+%ignore get_frame_var(tinfo_t *tif, sval_t *actval, const insn_t &insn, const op_t &x, sval_t v);
 %ignore value_repr_t__parse_value_repr;
+%ignore enum_type_data_t__get_value_repr;
 %ignore enum_type_data_t__set_value_repr;
+%ignore enum_type_data_t__get_max_serial;
+%ignore enum_type_data_t::get_constant_group(size_t *, size_t *, size_t);
+%ignore get_tinfo_tid;
 
 %ignore custloc_desc_t;
 %ignore install_custom_argloc;
@@ -181,6 +201,16 @@ idaman bool ida_export deserialize_tinfo2(tinfo_t *tif, const til_t *til, const 
   {
     return (n < 0 || n >= $self->nbases) ? nullptr : $self->base[n];
   }
+
+    %pythoncode {
+        def get_type_names(self):
+            n = first_named_type(self, NTF_TYPE)
+            while n:
+                yield n
+                n = next_named_type(self, n, NTF_TYPE)
+
+        type_names = property(get_type_names)
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -199,6 +229,14 @@ idaman bool ida_export deserialize_tinfo2(tinfo_t *tif, const til_t *til, const 
           const p_list *cmts = nullptr)
   {
     return $self->deserialize(til, &type, &fields, cmts == nullptr ? nullptr : &cmts);
+  }
+
+  ssize_t get_stkvar(
+          const insn_t &insn,
+          const op_t x,
+          sval_t v)
+  {
+    return ::get_frame_var($self, nullptr, insn, &x, v);
   }
 
   tinfo_t copy() const
@@ -281,6 +319,61 @@ idaman bool ida_export deserialize_tinfo2(tinfo_t *tif, const til_t *til, const 
 }
 %ignore tinfo_t::get_attr;
 
+%extend enum_type_data_t
+{
+  // \ref enum_type_data_t::get_constant_group but return tupple (group_start_index, group_size)
+  PyObject *get_constant_group(size_t idx) const
+  {
+    size_t group_start_index;
+    size_t group_size;
+    if ( $self->get_constant_group(&group_start_index, &group_size, idx) )
+      return Py_BuildValue("(nn)", group_start_index, group_size);
+    else
+      Py_RETURN_NONE;
+  }
+
+  %pythoncode {
+    def all_groups(self, skip_trivial=False):
+        """
+        Generate tuples for bitmask enum groups.
+        Each tupple is:
+        [0] enum member index of group start
+        [1] group size
+        Tupples may include or not the group with 1 element.
+        """
+        if len(self.group_sizes) != 0 and self.is_valid_group_sizes():
+            grp_start = 0
+            for grp_size in self.group_sizes:
+                if not skip_trivial or grp_size != 1:
+                    yield (grp_start, grp_size)
+                grp_start += grp_size
+            return None
+
+
+    def all_constants(self):
+        """
+        Generate tupples of all constants except of bitmasks.
+        Each tupple is:
+        [0] constant index
+        [1] enum member index of group start
+        [2] group size
+        In case of regular enum the second element of tupple is 0 and the third element of tupple is the number of enum members.
+        """
+        if len(self.group_sizes) != 0:  # bitmask enum
+            for (grp_start, grp_size) in self.all_groups():
+                grp_end = grp_start + grp_size
+                if grp_size != 1:
+                    grp_start += 1
+                for idx in range(grp_start, grp_end):
+                    yield (idx, grp_start, grp_size)
+        else: # regular enum
+            sz = self.size()
+            for idx in range(0, sz):
+                yield (idx, 0, sz)
+        return None
+  }
+}
+
 %feature("director") predicate_t;
 
 %ignore remove_tinfo_pointer;
@@ -304,6 +397,12 @@ idaman bool ida_export deserialize_tinfo2(tinfo_t *tif, const til_t *til, const 
             SWIG_ValueError,
             "invalid argument " "in method '" "$symname" "', argument " "$argnum"" of type '" "$1_type""'");
 }
+
+%typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER) const sclass_t * {
+  // %typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER) const sclass_t *
+  $1 = ($input == Py_None || PyLong_Check($input)) ? 1 : 0;
+}
+
 %typemap(freearg) const sclass_t * {
   // %typemap(freearg) const sclass_t *
   delete $1;

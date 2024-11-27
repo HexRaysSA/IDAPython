@@ -129,23 +129,6 @@ static PyObject *py_parse_command_line(const char *cmdline)
     Py_RETURN_NONE;
   return qstrvec2pylist(args);
 }
-
-//-------------------------------------------------------------------------
-/*
-#<pydoc>
-def get_inf_structure():
-    """
-    Returns the global variable 'inf' (an instance of idainfo structure, see ida.hpp)
-    """
-    pass
-#</pydoc>
-*/
-idainfo *get_inf_structure(void)
-{
-  return &inf;
-}
-
-//-------------------------------------------------------------------------
 // Declarations from Python.cpp
 /*
 #<pydoc>

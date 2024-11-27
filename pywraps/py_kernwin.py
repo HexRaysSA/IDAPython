@@ -136,4 +136,10 @@ ida_ida.__wrap_hooks_callback(
 from ida_pro import str2user
 SETMENU_IF_ENABLED = 4
 
+# bw-compat (flag removed in IDA 8.4):
+CH_NOIDB = CH_UNUSED
+
+BWN_LOCTYPS = BWN_TILVIEW
+IWID_LOCTYPS = IWID_TILVIEW
+
 #</pycode(py_kernwin)>

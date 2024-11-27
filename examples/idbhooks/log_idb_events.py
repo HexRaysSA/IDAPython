@@ -58,12 +58,6 @@ class idb_logger_hooks_t(ida_idp.IDB_Hooks):
     def changing_cmt(self, ea, is_repeatable, new_comment):
         return self._log()
 
-    def changing_enum_bf(self, tid, new_bf):
-        return self._log()
-
-    def changing_enum_cmt(self, tid, is_repeatable, new_comment):
-        return self._log()
-
     def changing_op_ti(self, ea, n, new_type, new_fnames):
         return self._log()
 
@@ -85,9 +79,6 @@ class idb_logger_hooks_t(ida_idp.IDB_Hooks):
     def changing_segm_start(self, segment, new_start, flags):
         return self._log()
 
-    def changing_struc_align(self, sptr):
-        return self._log()
-
     def changing_struc_cmt(self, tid, is_repeatable, comment):
         return self._log()
 
@@ -106,12 +97,6 @@ class idb_logger_hooks_t(ida_idp.IDB_Hooks):
     def compiler_changed(self, may_adjust_inf_fields):
         return self._log()
 
-    def deleting_enum(self, tid):
-        return self._log()
-
-    def deleting_enum_member(self, tid, cid):
-        return self._log()
-
     def deleting_func(self, pfn):
         return self._log()
 
@@ -119,12 +104,6 @@ class idb_logger_hooks_t(ida_idp.IDB_Hooks):
         return self._log()
 
     def deleting_segm(self, start_ea):
-        return self._log()
-
-    def deleting_struc(self, sptr):
-        return self._log()
-
-    def deleting_struc_member(self, sptr, mptr):
         return self._log()
 
     def deleting_tryblks(self, _range):
@@ -155,30 +134,6 @@ class idb_logger_hooks_t(ida_idp.IDB_Hooks):
         return self._log()
 
     def dirtree_segm_moved(self, dt):
-        return self._log()
-
-    def enum_bf_changed(self, tid):
-        return self._log()
-
-    def enum_cmt_changed(self, tid, is_repeatable):
-        return self._log()
-
-    def enum_created(self, tid):
-        return self._log()
-
-    def enum_deleted(self, tid):
-        return self._log()
-
-    def enum_member_created(self, tid, cid):
-        return self._log()
-
-    def enum_member_deleted(self, tid, cid):
-        return self._log()
-
-    def enum_renamed(self, tid):
-        return self._log()
-
-    def expanding_struc(self, sptr, offset, delta):
         return self._log()
 
     def extlang_changed(self, kind, el, idx):
@@ -244,15 +199,6 @@ class idb_logger_hooks_t(ida_idp.IDB_Hooks):
     def renamed(self, ea, new_name, is_local_name, old_name):
         return self._log()
 
-    def renaming_enum(self, tid, is_enum, new_name):
-        return self._log()
-
-    def renaming_struc(self, tid, old_name, new_name):
-        return self._log()
-
-    def renaming_struc_member(self, sptr, mptr, new_name):
-        return self._log()
-
     def savebase(self):
         return self._log()
 
@@ -295,34 +241,7 @@ class idb_logger_hooks_t(ida_idp.IDB_Hooks):
     def stkpnts_changed(self, pfn):
         return self._log()
 
-    def struc_align_changed(self, sptr):
-        return self._log()
-
-    def struc_cmt_changed(self, tid, is_repeatable):
-        return self._log()
-
-    def struc_created(self, tid):
-        return self._log()
-
-    def struc_deleted(self, tid):
-        return self._log()
-
-    def struc_expanded(self, sptr):
-        return self._log()
-
     def struc_member_changed(self, sptr, mptr):
-        return self._log()
-
-    def struc_member_created(self, sptr, mptr):
-        return self._log()
-
-    def struc_member_deleted(self, sptr, mid, offset):
-        return self._log()
-
-    def struc_member_renamed(self, sptr, mptr):
-        return self._log()
-
-    def struc_renamed(self, sptr, success):
         return self._log()
 
     def tail_owner_changed(self, tail, owner_func, old_owner):
@@ -343,13 +262,40 @@ class idb_logger_hooks_t(ida_idp.IDB_Hooks):
     def upgraded(self, _from):
         return self._log()
 
-    def enum_width_changed(self, tid, width):
+    def lt_udm_created(self, udt_name, udm):
         return self._log()
 
-    def enum_flag_changed(self, tid, flags):
+    def lt_udm_deleted(self, udt_name, udm_tid, udm):
         return self._log()
 
-    def enum_ordinal_changed(self, tid, ordinal):
+    def lt_udm_renamed(self, udt_name, udm, oldname):
+        return self._log()
+
+    def lt_udm_changed(self, udt_name, tid, old, new):
+        return self._log()
+
+    def lt_udt_expanded(self, udt_name, udm_tid, delta):
+        return self._log()
+
+    def frame_created(self, func_ea):
+        return self._log()
+
+    def frame_deleted(self, pfn):
+        return self._log()
+
+    def frame_udm_created(self, func_ea, udm):
+        return self._log()
+
+    def frame_udm_deleted(self, func_ea, udm_tid, udm):
+        return self._log()
+
+    def frame_udm_renamed(self, func_ea, udm, oldname):
+        return self._log()
+
+    def frame_udm_changed(self, func_ea, udm_tid, udm_old, udm_new):
+        return self._log()
+
+    def frame_expanded(self, func_ea, udm_tid, delta):
         return self._log()
 
 

@@ -2978,7 +2978,7 @@
       "idapython-user_graphs",
     ]
   },
-  "graph.abstract_graph_t.get_edge": {
+  "graph.drawable_graph_t.get_edge": {
     "return": [
       'NoneType',
       'edge_info_t',
@@ -2990,15 +2990,15 @@
   },
   "graph.create_disasm_graph": {
     "return": [
-      'mutable_graph_t',
+      'interactive_graph_t',
     ],
     "tests": [
       "idapython-api__graph",
     ]
   },
-  "graph.create_mutable_graph": {
+  "graph.create_interactive_graph": {
     "return": [
-      'mutable_graph_t',
+      'interactive_graph_t',
     ],
     "tests": [
       "idapython-api__graph",
@@ -3016,14 +3016,14 @@
   },
   "graph.get_viewer_graph": {
     "return": [
-      'mutable_graph_t',
+      'interactive_graph_t',
     ],
     "tests": [
       "grview-api",
       "grview-rendering",
     ]
   },
-  "graph.mutable_graph_t.add_edge": {
+  "graph.interactive_graph_t.add_edge": {
     "return": [
       'bool',
     ],
@@ -3031,7 +3031,7 @@
       "idapython-api__graph",
     ]
   },
-  "graph.mutable_graph_t.add_node": {
+  "graph.interactive_graph_t.add_node": {
     "return": [
       'int',
     ],
@@ -3039,7 +3039,7 @@
       "idapython-api__graph",
     ]
   },
-  "graph.mutable_graph_t.create_digraph_layout": {
+  "graph.interactive_graph_t.create_digraph_layout": {
     "return": [
       'bool',
     ],
@@ -3047,7 +3047,7 @@
       "idapython-api__graph",
     ]
   },
-  "graph.mutable_graph_t.set_edge": {
+  "graph.interactive_graph_t.set_edge": {
     "return": [
       'bool',
     ],
@@ -17406,15 +17406,6 @@
     ],
     "tests": [
       "plugins-hexrayspytools",
-    ]
-  },
-  "typeinf.import_type": {
-    "return": [
-      'int',
-    ],
-    "tests": [
-      "plugins-hexrayspytools",
-      "til-redeclare_named_type",
     ]
   },
   "typeinf.load_til": {

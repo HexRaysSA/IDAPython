@@ -2,22 +2,6 @@
 #define __PY_IDA_DISKIO__
 
 //<code(py_diskio)>
-//--------------------------------------------------------------------------
-int idaapi py_enumerate_files_cb(const char *file, void *ud)
-{
-  // No need to 'PYW_GIL_GET' here, as this is called synchronously
-  // and from the same thread as the one that executes
-  // 'py_enumerate_files'.
-  PYW_GIL_CHECK_LOCKED_SCOPE();
-  newref_t py_file(PyUnicode_FromString(file));
-  newref_t py_ret(
-          PyObject_CallFunctionObjArgs(
-                  (PyObject *)ud,
-                  py_file.o,
-                  nullptr));
-  return (!py_ret || !PyNumber_Check(py_ret.o)) ? 1 /* stop enum on failure */ : PyInt_AsLong(py_ret.o);
-}
-
 //-------------------------------------------------------------------------
 struct bytearray_linput_data_t
 {
@@ -52,6 +36,30 @@ PyObject *py_enumerate_files(PyObject *path, PyObject *fname, PyObject *callback
 {
   PYW_GIL_CHECK_LOCKED_SCOPE();
 
+  struct ida_local file_enumerator_adapter_t : public file_enumerator_t
+  {
+    PyObject *callback;
+
+    file_enumerator_adapter_t(PyObject *c) : callback(c) {}
+    int visit_file(const char *file) override
+    {
+      // No need to 'PYW_GIL_GET' here, as this is called synchronously
+      // and from the same thread as the one that executes
+      // 'py_enumerate_files'.
+      PYW_GIL_CHECK_LOCKED_SCOPE();
+      newref_t py_file(PyUnicode_FromString(file));
+      newref_t py_ret(
+              PyObject_CallFunctionObjArgs(
+                      callback,
+                      py_file.o,
+                      nullptr));
+      return !py_ret || !PyNumber_Check(py_ret.o)
+           ? 1 /* stop enum on failure */
+           : PyInt_AsLong(py_ret.o);
+    }
+  };
+  ida_local file_enumerator_adapter_t adapter(callback);
+
   do
   {
     if ( !PyUnicode_Check(path) || !PyUnicode_Check(fname) || !PyCallable_Check(callback) )
@@ -62,13 +70,13 @@ PyObject *py_enumerate_files(PyObject *path, PyObject *fname, PyObject *callback
     if ( !PyUnicode_as_qstring(&_path, path) || !PyUnicode_as_qstring(&_fname, fname) )
       break;
 
-    char answer[MAXSTR];
+    char answer[QMAXPATH];
     answer[0] = '\0';
     int r = enumerate_files(
             answer, sizeof(answer),
             _path.c_str(),
             _fname.c_str(),
-            py_enumerate_files_cb, callback);
+            adapter);
     return Py_BuildValue("(is)", r, answer);
   } while ( false );
   Py_RETURN_NONE;

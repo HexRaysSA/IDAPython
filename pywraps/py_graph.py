@@ -1,6 +1,17 @@
 #<pycode(py_graph)>
 import ida_idaapi
 import ida_kernwin
+import ida_gdl
+
+edge_t = ida_gdl.edge_t
+node_ordering_t = ida_gdl.node_ordering_t
+abstract_graph_t = drawable_graph_t
+mutable_graph_t = interactive_graph_t
+
+create_mutable_graph = create_interactive_graph
+delete_mutable_graph = delete_interactive_graph
+grcode_create_mutable_graph = grcode_create_interactive_graph
+grcode_create_mutable_graph = grcode_create_interactive_graph
 
 class GraphViewer(ida_kernwin.CustomIDAMemo):
     class UI_Hooks_Trampoline(ida_kernwin.UI_Hooks):

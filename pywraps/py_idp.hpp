@@ -369,7 +369,7 @@ static PyObject *ph_get_operand_info(
     // Allocate register space
     thid_t tid = get_current_thread();
     regvals_t regvalues;
-    regvalues.resize(dbg->nregs);
+    regvalues.resize(dbg->nregisters);
     // Read registers
     if ( get_reg_vals(tid, -1, regvalues.begin()) != DRC_OK )
       break;
@@ -687,7 +687,7 @@ static const regval_t *idaapi _py_getreg(
         const char *name,
         const regval_t *regvals)
 {
-  for ( int i=dbg->nregs - 1; i >= 0; i-- )
+  for ( int i=dbg->nregisters - 1; i >= 0; i-- )
   {
     if ( strieq(name, dbg->regs(i).name) )
       return &regvals[i];
