@@ -21,10 +21,10 @@ def say_hi():
 ida_expr.compile_idc_text('static key_2() { RunPythonStatement("say_hi()"); }')
 
 # Add the hotkey
-ida_kernwin.add_idc_hotkey("2", 'key_2')
+ida_kernwin.add_idc_hotkey("2", "key_2")
 
 # Press 2 to activate foo()
 
 # The hotkey can be removed with
-# ida_kernwin.del_idc_hotkey('2')
+# ida_kernwin.del_idc_hotkey("2")
 

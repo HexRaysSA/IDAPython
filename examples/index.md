@@ -89,6 +89,43 @@ actions ctxmenu UI_Hooks
 
   </details>
 
+#### add_frame_member
+<details>
+  <summary>Programatically add a new frame member to an existing frame.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/add_frame_member.py">core/add_frame_member.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we show a way to add a new frame member (a pointer to
+ an uint64) inside a wide enough gap in the frame:
+* Get the function object surrounding cursor location.
+* Use this function to retrieve the corresponding frame object.
+* Find a wide enough gap to create our new member.
+* If found, we use cal_frame_offset() to get the actual
+  offset in the frame structure.
+* Use the previous result to add the new member.
+
+#### Uses
+* ida_frame.add_frame_member
+* ida_frame.calc_frame_offset
+* ida_frame.get_func_frame
+* ida_funcs.get_func
+* ida_range.rangeset_t
+* ida_typeinf.BTF_UINT64
+* ida_typeinf.tinfo_t
+* idc.here
+
+</blockquote>
+
+  </details>
+
 #### add_hotkey
 <details>
   <summary>Triggering bits of code by pressing a shortcut</summary>
@@ -157,6 +194,43 @@ actions
 
   </details>
 
+#### apply_callee_tinfo
+<details>
+  <summary>Programatically apply locally created function type info to all the addresses refering to that function.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/apply_callee_tinfo.py">core/apply_callee_tinfo.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Open the private type libary.
+* Load its declaration in the type library by parsing its declaration and
+keep the return tuple for future use.
+* Deserialize the type info stored in the returned tuple.
+* Get the address of the function.
+* Get the address of the code reference to the function and apply
+the type info there.
+
+#### Uses
+* ida_idaapi.BADADDR
+* ida_name.get_name_ea
+* ida_typeinf.PT_REPLACE
+* ida_typeinf.apply_callee_tinfo
+* ida_typeinf.get_idati
+* ida_typeinf.idc_parse_decl
+* ida_typeinf.tinfo_t
+* idautils.CodeRefsTo
+
+</blockquote>
+
+  </details>
+
 #### auto_instantiate_widget_plugin
 <details>
   <summary>Better integrating custom widgets in the desktop layout</summary>
@@ -204,6 +278,93 @@ desktop plugin UI_Hooks
 * ida_kernwin.register_action
 * ida_kernwin.simplecustviewer_t
 * ida_kernwin.simplecustviewer_t.Create
+
+</blockquote>
+
+  </details>
+
+#### change_stkvar_name
+<details>
+  <summary>Programatically change the name of an *existing* stack variable.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/change_stkvar_name.py">core/change_stkvar_name.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we demonstrate a way to change the name of a
+stack variable:
+* Get the function object surrounding cursor location.
+* Use this function to retrieve the corresponding frame object.
+* Find the frame member matching the given name.
+* Using its offset in the frame structure object, calculate
+  the actual stack delta.
+* Use the previous result to redefine the stack variable name if
+  it is not a special or argument member.
+
+#### Uses
+* ida_frame.define_stkvar
+* ida_frame.get_func_frame
+* ida_frame.is_funcarg_off
+* ida_frame.is_special_frame_member
+* ida_frame.soff_to_fpoff
+* ida_funcs.get_func
+* ida_typeinf.tinfo_t
+* ida_typeinf.udm_t
+* idc.here
+
+</blockquote>
+
+  </details>
+
+#### change_stkvar_type
+<details>
+  <summary>Programatically change the type and the name of a stack variable. For this sample we will use RtlImageNtHeader from ntdll.dll.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/change_stkvar_type.py">core/change_stkvar_type.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we show a way to change the type and the name
+of a stack variable. In this case we will take advantage of the
+fact that RtlImageNtHeader calls RtlImageNtHeaderEx which takes
+a pointer to PIMAGE_NT_HEADERS as its fourth parameter and, for
+this, uses a stack variable of its caller.
+* Get the function object for RtlImageNtHeader.
+* Iterate through the function item to localize the load of the
+stack variable address before the call to RtlImageNtHeaderEx. We
+keep this information.
+* Localize the call and take advantage of the previoulsy stored
+instruction to get the stack variable index in the frame.
+* Set the type and rename the stack variable.
+
+#### Uses
+* ida_allins.NN_call
+* ida_allins.NN_lea
+* ida_frame.get_func_frame
+* ida_funcs.func_item_iterator_t
+* ida_funcs.get_func
+* ida_funcs.get_func_name
+* ida_ida.inf_get_procname
+* ida_ida.inf_is_64bit
+* ida_idaapi.BADADDR
+* ida_name.get_name_ea
+* ida_typeinf.BTF_STRUCT
+* ida_typeinf.TERR_OK
+* ida_typeinf.tinfo_t
+* ida_ua.decode_insn
+* ida_ua.insn_t
 
 </blockquote>
 
@@ -263,6 +424,178 @@ coloring UI_Hooks
 
   </details>
 
+#### create_array
+<details>
+  <summary>Programatically create an array.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/create_array.py">core/create_array.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we create an array using both versions of
+create_array tinfo_t method.
+
+#### Uses
+* ida_typeinf.BTF_INT
+* ida_typeinf.array_type_data_t
+* ida_typeinf.tinfo_t
+
+</blockquote>
+
+  </details>
+
+#### create_bfstruct
+<details>
+  <summary>Programatically create a bitfield structure.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/create_bfstruct.py">core/create_bfstruct.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+ * Create a bitfield structure. In the present case the bitfield is an int32
+made of three 'members' spanning it entirely:
+    bit0->bit19: bf1
+    bit20->bit25: bf2
+    bit26->bit31: bf3
+ * For each member create a repeatable comment.
+
+#### Uses
+* ida_typeinf.tinfo_t
+* ida_typeinf.udm_t
+* ida_typeinf.udt_type_data_t
+
+</blockquote>
+
+  </details>
+
+#### create_bmenum
+<details>
+  <summary>Programatically create a bitmask enum.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/create_bmenum.py">core/create_bmenum.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we create a bitmask enumeration member by member.
+
+#### Uses
+* ida_typeinf.BTE_BITMASK
+* ida_typeinf.BTE_HEX
+* ida_typeinf.tinfo_t
+
+</blockquote>
+
+  </details>
+
+#### create_libssh2_til
+<details>
+  <summary>Programatically create a til file.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/create_libssh2_til.py">core/create_libssh2_til.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+ * We create a new libssh2-64.til file where we load some libssh2
+   64-bit structures.
+ * Once the file has been created, it can copied in the IDA install
+   til directory or in the user IDA til directory.
+
+#### Uses
+* ida_typeinf.HTI_DCL
+* ida_typeinf.HTI_PAKDEF
+* ida_typeinf.compact_til
+* ida_typeinf.free_til
+* ida_typeinf.new_til
+* ida_typeinf.parse_decls
+* ida_typeinf.store_til
+
+</blockquote>
+
+  </details>
+
+#### create_struct_by_member
+<details>
+  <summary>Programatically create structures and/or unions.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/create_struct_by_member.py">core/create_struct_by_member.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Create a structure by building it member by members. For this we
+first create a udt (user data type) object. We, then, populate it with
+udms (user data type members). Finally we actually store it in the local
+types via a call to set_named_type.
+
+#### Uses
+* ida_typeinf.BTF_UINT32
+* ida_typeinf.NTF_TYPE
+* ida_typeinf.del_named_type
+* ida_typeinf.tinfo_errstr
+* ida_typeinf.tinfo_t
+* ida_typeinf.udt_type_data_t
+
+</blockquote>
+
+  </details>
+
+#### create_struct_by_parsing
+<details>
+  <summary>Programatically create structures.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/create_struct_by_parsing.py">core/create_struct_by_parsing.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we create a structure using the "parsing" method.
+
+#### Uses
+* ida_typeinf.NTF_TYPE
+* ida_typeinf.del_named_type
+* ida_typeinf.idc_parse_types
+
+</blockquote>
+
+  </details>
+
 #### create_structure_programmatically
 <details>
   <summary>Programmatically create & populate a structure</summary>
@@ -304,6 +637,81 @@ members of different types.
 
 #### Author
 Gergely Erdelyi (gergely.erdelyi@d-dome.net)
+
+</blockquote>
+
+  </details>
+
+#### create_union_by_member
+<details>
+  <summary>Programatically create a union.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/create_union_by_member.py">core/create_union_by_member.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Create a union by building it member by member. The main difference with
+the previous step is that we have to set is_union to true.
+
+#### Uses
+* ida_typeinf.BTF_CHAR
+* ida_typeinf.BTF_FLOAT
+* ida_typeinf.BTF_INT32
+* ida_typeinf.BTF_UNION
+* ida_typeinf.NTF_TYPE
+* ida_typeinf.PRTYPE_DEF
+* ida_typeinf.PRTYPE_MULTI
+* ida_typeinf.PRTYPE_TYPE
+* ida_typeinf.del_named_type
+* ida_typeinf.tinfo_t
+* ida_typeinf.udm_t
+* ida_typeinf.udt_type_data_t
+
+</blockquote>
+
+  </details>
+
+#### create_user_shared_data
+<details>
+  <summary>Programatically create a segment hodling the user shared data area in ntdll.dll.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/create_user_shared_data.py">core/create_user_shared_data.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we show how to create, set type and name of
+a user shared data region in an ntdll IDB:
+* Load the `_KUSER_SHARED_DATA` data type from a type info
+  library shipped with IDA, and import it into the IDB's "local types"
+* Create a data segment with UserSharedData as its name.
+* Apply the type to the start of the newly created segment base
+  address.
+* Set the address name.
+
+#### Uses
+* ida_name.set_name
+* ida_segment.add_segm_ex
+* ida_segment.saRelPara
+* ida_segment.scPub
+* ida_segment.segment_t
+* ida_segment.setup_selector
+* ida_typeinf.TINFO_DEFINITE
+* ida_typeinf.apply_tinfo
+* ida_typeinf.free_til
+* ida_typeinf.load_til
 
 </blockquote>
 
@@ -382,6 +790,33 @@ one format for a specific 'custom data type'.)
 * ida_nalt.get_input_file_path
 * ida_netnode.netnode
 * ida_typeinf.tinfo_t
+
+</blockquote>
+
+  </details>
+
+#### del_struct_members
+<details>
+  <summary>Programatically delete a range of members in a structure</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/del_struct_members.py">core/del_struct_members.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we first create a structure with many members, and then
+remove all those that fall within a range
+
+#### Uses
+* ida_typeinf.STRMEM_OFFSET
+* ida_typeinf.TERR_OK
+* ida_typeinf.tinfo_t
+* ida_typeinf.udm_t
 
 </blockquote>
 
@@ -592,6 +1027,109 @@ Ctrl+Shift+S
 
   </details>
 
+#### func_ti_changed_listener
+<details>
+  <summary>Display information about function type information changes.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/func_ti_changed_listener.py">core/func_ti_changed_listener.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we will create an IDB hook that intercepts `ti_changed`
+IDB events, and if it is a function prototype that changed, print it.
+
+#### Keywords
+IDB_Hooks
+
+#### Uses
+* ida_funcs.get_func_name
+* ida_idp.IDB_Hooks
+* ida_typeinf.tinfo_t
+
+</blockquote>
+
+  </details>
+
+#### gap_size_align_snippet
+<details>
+  <summary></summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/gap_size_align_snippet.py">core/gap_size_align_snippet.py</a>
+
+#### Category
+core
+
+#### Description
+
+
+#### Uses
+* ida_range.rangeset_t
+
+</blockquote>
+
+  </details>
+
+#### get_best_fit_member
+<details>
+  <summary>Ida_struct.get_best_fit_member altenative.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/get_best_fit_member.py">core/get_best_fit_member.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to provide a way to figure out
+what structure member, is most likely referenced by an offset.
+
+#### Uses
+* ida_typeinf.tinfo_t
+* ida_typeinf.udt_type_data_t
+
+</blockquote>
+
+  </details>
+
+#### get_innermost_member
+<details>
+  <summary>Ida_struct.get_innermost_member altenative.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/get_innermost_member.py">core/get_innermost_member.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to provide/test an alternative
+to ida_struct.get_innermost_member.
+
+#### Uses
+* ida_idaapi.BADADDR
+* ida_typeinf.NTF_TYPE
+* ida_typeinf.del_named_type
+* ida_typeinf.idc_parse_types
+* ida_typeinf.tinfo_t
+* ida_typeinf.udt_type_data_t
+
+</blockquote>
+
+  </details>
+
 #### idapythonrc
 <details>
   <summary>Code to be run right after IDAPython initialization</summary>
@@ -612,6 +1150,78 @@ The `idapythonrc.py` file:
 
 can contain any IDAPython code that will be run as soon as
 IDAPython is done successfully initializing.
+
+</blockquote>
+
+  </details>
+
+#### import_type_from_til
+<details>
+  <summary>Progarmatically load a til and a type.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/import_type_from_til.py">core/import_type_from_til.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+ In this script, we:
+ * ask the user for a specific til to be lodaed
+ * if successfully loaded ask the user for a type name to be imported.
+ * append the type to the local types.
+
+#### Uses
+* ida_kernwin.ask_str
+* ida_netnode.BADNODE
+* ida_typeinf.ADDTIL_DEFAULT
+* ida_typeinf.TIL_ADD_ALREADY
+* ida_typeinf.TIL_ADD_OK
+* ida_typeinf.add_til
+* ida_typeinf.get_idati
+* ida_typeinf.tinfo_t
+
+</blockquote>
+
+  </details>
+
+#### insert_gap
+<details>
+  <summary>Programatically insert a gap of specified size at specified offset.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/insert_gap.py">core/insert_gap.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Create a function that takes three arguments: a structure name,
+an offset in bytes and a size in byte.
+* In this function we first retrieve the type info object of the structure,
+get the udt details, find the idx of the member at the specified offset,
+create a gap "member" using udm_t__make_gap(), insert it into the udt object,
+create the udt inside the tif object and finally save the type information.
+* To exercise this script just change the name of the structure to the one
+that suites you.
+
+#### Uses
+* ida_typeinf.NTF_REPLACE
+* ida_typeinf.NTF_TYPE
+* ida_typeinf.STRMEM_OFFSET
+* ida_typeinf.TERR_OK
+* ida_typeinf.save_tinfo
+* ida_typeinf.tinfo_t
+* ida_typeinf.udm_t
+* ida_typeinf.udm_t__make_gap
+* ida_typeinf.udt_type_data_t
 
 </blockquote>
 
@@ -682,6 +1292,104 @@ bookmarks
 * ida_kernwin.get_widget_title
 * ida_kernwin.register_action
 * ida_moves.bookmarks_t
+
+</blockquote>
+
+  </details>
+
+#### list_enum_member
+<details>
+  <summary>Programatically list a user selected enumeration.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/list_enum_member.py">core/list_enum_member.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demaonstrate how to
+programatically list members of an enumeration. For
+this we:
+* ask the user to enter the of an enumeration
+* verify that the entered name is indeed aan enumeration
+* get the enumeration details object
+* enumerate the members.
+
+#### Uses
+* ida_kernwin.ask_str
+* ida_typeinf.BTF_ENUM
+* ida_typeinf.enum_type_data_t
+* ida_typeinf.get_idati
+* ida_typeinf.tinfo_t
+
+</blockquote>
+
+  </details>
+
+#### list_frame_info
+<details>
+  <summary>Programatically list some frame information.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/list_frame_info.py">core/list_frame_info.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Get the function object surrounding the cursor location.
+* Get the corresponding frame object.
+* Get the details about the frame.
+* Iterate them and display their:
+    - Index
+    - Name
+    - Offset (starting and ending in bytes)
+    - Type
+
+#### Uses
+* ida_frame.get_func_frame
+* ida_funcs.get_func
+* ida_funcs.get_func_name
+* ida_typeinf.tinfo_t
+* ida_typeinf.udt_type_data_t
+* idc.here
+
+</blockquote>
+
+  </details>
+
+#### list_func_details
+<details>
+  <summary>Programatically displays information about functions types.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/list_func_details.py">core/list_func_details.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we demonstrate how to list a function return type
+allong with its parameters types and name if any. We do this for
+all the functions found in the database.
+
+#### Uses
+* ida_funcs.get_func_qty
+* ida_kernwin.msg_clear
+* ida_nalt.get_tinfo
+* ida_typeinf.func_type_data_t
+* ida_typeinf.tinfo_t
+* idautils.Functions
 
 </blockquote>
 
@@ -939,9 +1647,7 @@ xrefs
 * ida_kernwin.get_highlight
 * ida_kernwin.get_screen_ea
 * ida_kernwin.register_action
-* ida_typeinf.STRMEM_NAME
 * ida_typeinf.tinfo_t
-* ida_typeinf.udm_t
 * ida_ua.decode_insn
 * ida_ua.insn_t
 
@@ -973,6 +1679,250 @@ this will not require that the "Strings" window is opened & available.
 
 #### See also
 * [show_selected_strings](#show_selected_strings)
+
+</blockquote>
+
+  </details>
+
+#### list_struct_accesses
+<details>
+  <summary></summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/list_struct_accesses.py">core/list_struct_accesses.py</a>
+
+#### Category
+core
+
+#### Description
+
+
+#### Uses
+* ida_bytes.get_full_flags
+* ida_bytes.get_stroff_path
+* ida_bytes.is_stroff
+* ida_nalt.MAXSTRUCPATH
+* ida_pro.sval_pointer
+* ida_pro.tid_array
+* ida_typeinf.STRMEM_INDEX
+* ida_typeinf.get_tid_name
+* ida_typeinf.tinfo_t
+* ida_typeinf.udm_t
+* ida_ua.decode_insn
+* ida_ua.insn_t
+* ida_ua.o_imm
+* ida_ua.o_void
+
+</blockquote>
+
+  </details>
+
+#### list_struct_member
+<details>
+  <summary>Programatically list the members of a user provided structure name.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/list_struct_member.py">core/list_struct_member.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Ask the user for a structure name. It must already be present in the
+local types.
+* Retrieve the structure type info from the local type
+* Extract its type details (udt)
+* Iterates it members and prints their names.
+
+#### Uses
+* ida_kernwin.ask_str
+* ida_typeinf.BTF_STRUCT
+* ida_typeinf.get_idati
+* ida_typeinf.tinfo_t
+* ida_typeinf.udt_type_data_t
+
+</blockquote>
+
+  </details>
+
+#### list_struct_xrefs
+<details>
+  <summary>Programatically list the addresses where a particular structure is referenced.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/list_struct_xrefs.py">core/list_struct_xrefs.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Ask the user for a structure name. It must already be present in the
+local types.
+* Get its tid
+* Create the list of all the reference.
+* Print it
+
+#### Uses
+* ida_kernwin.choose_struct
+* ida_typeinf.tinfo_t
+* ida_xref.xrefblk_t
+
+</blockquote>
+
+  </details>
+
+#### list_union_member
+<details>
+  <summary>Programatically list the members of a user provided union name.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/list_union_member.py">core/list_union_member.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Ask the user for a union name. It must already be present in the
+local types.
+* Retrieve the union type info from the local type
+* Extract its type details (udt)
+* Iterates it members and prints their names.
+
+#### Uses
+* ida_kernwin.ask_str
+* ida_typeinf.BTF_UNION
+* ida_typeinf.get_idati
+* ida_typeinf.tinfo_t
+* ida_typeinf.udt_type_data_t
+
+</blockquote>
+
+  </details>
+
+#### mark_func_spoiled
+<details>
+  <summary>Programmatically change the signature of a function to __spoils</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/mark_func_spoiled.py">core/mark_func_spoiled.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+At least two possibilies are offered in order to indicate that a function
+spoils registers (excluding the "normal" ones):
+* by parsing a declaration (we assume that the func object has already been created):
+    func_tfinfo = ida_typeinf.tinfo_t()
+    func_tinfo.parse('int _spoils<rsi> main();')
+    ida_typeinf.apply_tinfo(func.start_ea, func_tinfo, ida_typeinf.TINFO_DEFINITE)
+* by editing the tinfo_t object spoiled registers vector and flags. This script uses
+this method.
+
+#### Uses
+* ida_funcs.get_func
+* ida_idp.parse_reg_name
+* ida_idp.reg_info_t
+* ida_kernwin.get_screen_ea
+* ida_nalt.get_tinfo
+* ida_typeinf.FTI_SPOILED
+* ida_typeinf.TINFO_DEFINITE
+* ida_typeinf.apply_tinfo
+* ida_typeinf.func_type_data_t
+* ida_typeinf.tinfo_t
+
+</blockquote>
+
+  </details>
+
+#### operand_to_struct_member
+<details>
+  <summary>Programatically convert an operand to a structure member.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/operand_to_struct_member.py">core/operand_to_struct_member.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+ * ask the user to choose the structure that will be used for
+ the conversion.
+ * build the structure path and call ida_bytes.op_stroff. In case
+ an enum is found a modal chooser is displayed in order to select
+ a member.
+
+#### Uses
+* ida_bytes.op_stroff
+* ida_kernwin.Choose
+* ida_kernwin.Choose.CHCOL_HEX
+* ida_kernwin.Choose.CHCOL_PLAIN
+* ida_kernwin.choose_struct
+* ida_kernwin.get_opnum
+* ida_kernwin.get_screen_ea
+* ida_pro.tid_array
+* ida_typeinf.STRMEM_OFFSET
+* ida_typeinf.tinfo_t
+* ida_typeinf.udm_t
+* ida_typeinf.udt_type_data_t
+* ida_ua.decode_insn
+* ida_ua.insn_t
+
+</blockquote>
+
+  </details>
+
+#### print_stkvar_xrefs
+<details>
+  <summary>Programatically list the xref for each stack variables in the frame.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/print_stkvar_xrefs.py">core/print_stkvar_xrefs.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we demonstrate how to list each stack variables
+xref:
+* Get the function object surrounding cursor location.
+* Use this function to retrieve the corresponding frame object.
+* For each frame element:
+    - Build the stack variable xref list
+    - Print it.
+
+#### Uses
+* ida_frame.build_stkvar_xrefs
+* ida_frame.get_func_frame
+* ida_frame.xreflist_t
+* ida_funcs.get_func
+* ida_typeinf.tinfo_t
+* ida_typeinf.udt_type_data_t
+* idc.here
 
 </blockquote>
 
@@ -1082,6 +2032,48 @@ Register (possibly repeating) timers.
 
   </details>
 
+#### setpehdr
+<details>
+  <summary>Progarmmatically load the DOS and PE headers in a binary loaded PE executable.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/setpehdr.py">core/setpehdr.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+    * load a PE64 file in binary mode
+    * import some types from the mssdk64 til
+    * apply these types at the correct ofsset in the DB
+    * finally, rebase the program based on the information stored
+    in the ImageBase field of the IMAGE_OPTIONAL_HEADER64.
+
+#### Uses
+* ida_bytes.create_struct
+* ida_bytes.get_dword
+* ida_bytes.get_qword
+* ida_bytes.get_word
+* ida_hexrays.get_type
+* ida_name.set_name
+* ida_netnode.BADNODE
+* ida_segment.MSF_FIXONCE
+* ida_segment.rebase_program
+* ida_typeinf.ADDTIL_DEFAULT
+* ida_typeinf.BTF_STRUCT
+* ida_typeinf.add_til
+* ida_typeinf.tinfo_t
+* ida_typeinf.udt_type_data_t
+* idc.import_type
+
+</blockquote>
+
+  </details>
+
 #### trigger_actions_programmatically
 <details>
   <summary>Execute existing actions programmatically</summary>
@@ -1113,6 +2105,40 @@ actions
 * ida_kernwin.execute_ui_requests
 * ida_kernwin.msg
 * ida_kernwin.process_ui_action
+
+</blockquote>
+
+  </details>
+
+#### visit_tinfo
+<details>
+  <summary>Programatically visit a type.</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/core/visit_tinfo.py">core/visit_tinfo.py</a>
+
+#### Category
+core
+
+#### Description
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we show an example of tinfo_visitor_t to list
+a user define type members. In case of an array or a pointer we
+do not visit the child by calling prune_now() visitor member
+method.
+
+#### Uses
+* ida_netnode.BADNODE
+* ida_typeinf.ADDTIL_DEFAULT
+* ida_typeinf.TVST_DEF
+* ida_typeinf.add_til
+* ida_typeinf.array_type_data_t
+* ida_typeinf.get_idati
+* ida_typeinf.tinfo_t
+* ida_typeinf.tinfo_visitor_t
+* idc.import_type
 
 </blockquote>
 
@@ -2692,6 +3718,32 @@ IDP_Hooks
 #### Uses
 * ida_idp.IDP_Hooks
 * idautils.DecodeInstruction
+
+</blockquote>
+
+  </details>
+
+#### log_idp_events
+<details>
+  <summary>Logging IDP events</summary>
+
+<blockquote>
+
+#### Source code
+<a href="https://github.com/idapython/src/blob/master/examples/idphooks/log_idp_events.py">idphooks/log_idp_events.py</a>
+
+#### Category
+idphooks
+
+#### Description
+These hooks will be notified about IDP events, and
+dump their information to the "Output" window
+
+#### Keywords
+IDP_Hooks
+
+#### Uses
+* ida_idp.IDP_Hooks
 
 </blockquote>
 

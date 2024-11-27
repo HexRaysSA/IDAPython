@@ -32,9 +32,7 @@ class list_stkvar_xrefs_ah_t(ida_kernwin.action_handler_t):
                 frame = ida_typeinf.tinfo_t()
                 pfn = ida_funcs.get_func(cur_ea)
                 frame.get_func_frame(pfn)
-                stkvar = ida_typeinf.udm_t()
-                stkvar.name = stkvar_name
-                stkvar_idx = frame.find_udm(stkvar, ida_typeinf.STRMEM_NAME)
+                stkvar_idx, stkvar = frame.get_udm(stkvar_name)
                 if stkvar_idx >= 0:
                     for ea in pfn:
                         F = ida_bytes.get_flags(ea)

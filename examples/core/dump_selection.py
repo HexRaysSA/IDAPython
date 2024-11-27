@@ -35,7 +35,7 @@ def get_widget_lines(widget, tp0, tp1):
         if last_line_ref == 0: # at last line
             line = line[0:tp1.x]
         elif first_line_ref == 0: # at first line
-            line = ' ' * tp0.x + line[tp0.x:]
+            line = " " * tp0.x + line[tp0.x:]
         lines.append(line)
     return lines
 

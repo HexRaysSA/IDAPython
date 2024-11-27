@@ -98,5 +98,5 @@ def main():
                 chunk.start_ea,
                 chunk.end_ea))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

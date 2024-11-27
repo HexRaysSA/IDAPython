@@ -70,7 +70,7 @@ class vds_hooks_t(ida_hexrays.Hexrays_Hooks):
             print("### %s: %s" % (method_name, ", ".join(argstrs)))
         return 0
 
-    def flowchart(self, fc, mba):
+    def flowchart(self, fc, mba, reachable_blocks, decomp_flags):
         return self._log()
 
     def stkpnts(self, mba, stkpnts):
@@ -187,8 +187,8 @@ class vds_hooks_t(ida_hexrays.Hexrays_Hooks):
     def pre_structural(self, ctrl_graph, cfunc, cfg):
         return self._log()
 
-    def collect_warnings(self, *args):
-        return 0
+    def collect_warnings(self, cfunc):
+        return self._log()
 
 vds_hooks = vds_hooks_t()
 vds_hooks.hook()

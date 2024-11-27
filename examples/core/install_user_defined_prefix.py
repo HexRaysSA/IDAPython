@@ -11,7 +11,7 @@ description:
 import ida_lines
 import ida_idaapi
 
-PREFIX = ida_lines.SCOLOR_INV + ' ' + ida_lines.SCOLOR_INV
+PREFIX = ida_lines.SCOLOR_INV + " " + ida_lines.SCOLOR_INV
 
 class my_user_prefix_t(ida_lines.user_defined_prefix_t):
     def get_user_defined_prefix(self, ea, insn, lnnum, indent, line):

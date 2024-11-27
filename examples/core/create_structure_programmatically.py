@@ -22,7 +22,7 @@ import idc
 tif = ida_typeinf.tinfo_t()
 if tif.get_named_type(None, "mystr1"):
     ida_typeinf.del_named_type(None, "mystr1", ida_typeinf.NTF_TYPE)
-ida_typeinf.idc_parse_types('struct mystr1 { };', 0)
+ida_typeinf.idc_parse_types("struct mystr1 { };", 0)
 if not tif.get_named_type(None, "mystr1"):
     print("Error retrieving mystr1")
 print("%x" % tif.get_ordinal())
@@ -39,29 +39,20 @@ simple_types_data = [
     (ida_typeinf.BTF_TBYTE, 10),
 ]
 
-udm = ida_typeinf.udm_t()
 for i, tpl in enumerate(simple_types_data):
     t, nsize = tpl
-    udm.name = "t%02d" % i
-    udm.size = nsize * 8
-    udm.type = ida_typeinf.tinfo_t(t)
-    udm.offset = tif.get_unpadded_size() * 8
-    print("t%x:"% t,
-          ida_typeinf.tinfo_errstr(tif.add_udm(udm)) )
+    udm = ida_typeinf.udm_t(f"t{i:02d}", t, tif.get_unpadded_size() * 8)
+    print(f"t{t:x}:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)))
 
-repr = ida_typeinf.value_repr_t()
-repr.set_vtype(ida_typeinf.FRB_NUMO)
+repr_ = ida_typeinf.value_repr_t()
+repr_.set_vtype(ida_typeinf.FRB_NUMO)
 print("Set member representation to octal:",
-    ida_typeinf.tinfo_errstr(tif.set_udm_repr(3, repr)) )
+      ida_typeinf.tinfo_errstr(tif.set_udm_repr(3, repr_)))
 
 # Test ASCII type
-udm = ida_typeinf.udm_t()
-udm.name = "tascii"
-udm.size = 8 * 8
-udm.type.parse('char tascii[8] __strlit(C,"windows-1252");') # no other way?
-udm.offset = tif.get_size() * 8
-print("%s:"% udm.name,
-      ida_typeinf.tinfo_errstr(tif.add_udm(udm)) )
+udm = ida_typeinf.udm_t("tascii", ida_typeinf.BTF_INT64, tif.get_size() * 8)
+udm.type.parse('char tascii[8] __strlit(C,"windows-1252");')  # no other way?
+print(f"{udm.name}:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)))
 
 # Test struct member type by preparing the whole structure at once
 mtif = ida_typeinf.tinfo_t()
@@ -69,57 +60,47 @@ if mtif.get_named_type(None, "mystr2"):
     ida_typeinf.del_named_type(None, "mystr2", ida_typeinf.NTF_TYPE)
 
 mudt = ida_typeinf.udt_type_data_t()
-mudt.name="mystr2"
-mudm = ida_typeinf.udm_t()
-mudm.name="member1"
-mudm.type = ida_typeinf.tinfo_t(ida_typeinf.BTF_INT)
-mudt.push_back(mudm)
-mudm.name="member2"
-mudt.push_back(mudm)
+mudt.name = "mystr2"
+tif_btf_int = ida_typeinf.tinfo_t(ida_typeinf.BTF_INT)
+mudt.add_member("member1", tif_btf_int)
+mudt.add_member("member2", tif_btf_int)
 mtif.create_udt(mudt)
-print("Struct 2:", ida_typeinf.tinfo_errstr(mtif.set_named_type(None, "mystr2")) )
+print("Struct 2:",
+      ida_typeinf.tinfo_errstr(mtif.set_named_type(None, "mystr2")))
 
-#Test structure member
-udm.size = mtif.get_size() * 8
-udm.offset = tif.get_unpadded_size() * 8
-udm.name = "tstruct"
-udm.type = mtif
-print("Struct member:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)) )
+# Test structure member
+udm = ida_typeinf.udm_t("tstruct", mtif, tif.get_unpadded_size() * 8)
+print("Struct member:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)))
 
-#Test pointer to structure
-udm.name = "strptr"
-udm.size = 32
-udm.offset = tif.get_unpadded_size() * 8
 if not mtif.create_ptr(mtif):
     print("Error while creating structure pointer")
-udm.type = mtif
-print("Strptr:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)) )
 
-#Test structure offset
-udm.name = "tstroff"
-udm.size = 32
-udm.offset = tif.get_unpadded_size() * 8
+# Test pointer to structure
+udm = ida_typeinf.udm_t("strptr", mtif, tif.get_unpadded_size() * 8)
+print("Strptr:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)))
+
+# Test structure offset
+udm = ida_typeinf.udm_t("tstroff", mtif, tif.get_unpadded_size() * 8)
 udm.type.parse("int tstroff __stroff(mystr2);")
-print("Stroff:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)) )
+print("Stroff:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)))
 
 # Test offset types
-udm.name = "toffset"
-udm.size = 32
-udm.offset = tif.get_unpadded_size() * 8
+udm = ida_typeinf.udm_t("toffset", mtif, tif.get_unpadded_size() * 8)
 udm.type.parse("void *toffset;")
-print("Offset:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)) )
+print("Offset:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)))
 
 # Test C bitfield types
-udm.name = "tbitfield"
-udm.offset = tif.get_unpadded_size() * 8
 btif = ida_typeinf.tinfo_t()
-btif.create_bitfield(4, 2, True) # unsigned __int32 : 2
-udm.size = 2
-udm.type = btif
-print("Bitfield:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)) )
+bf_nbits = 2
+btif.create_bitfield(4, bf_nbits, True)  # unsigned __int32 : 2
+udm = ida_typeinf.udm_t("tbitfield", btif, tif.get_unpadded_size() * 8)
+# Need to set value to width, otherwise getting "Bitfield: bad size"
+udm.size = bf_nbits
+print("Bitfield:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)))
 
 # Print the expanded structure
-pflags = ida_typeinf.PRTYPE_TYPE|ida_typeinf.PRTYPE_DEF|ida_typeinf.PRTYPE_MULTI
+pflags = (ida_typeinf.PRTYPE_TYPE | ida_typeinf.PRTYPE_DEF
+          | ida_typeinf.PRTYPE_MULTI)
 print(tif._print(tif.get_type_name(), pflags))
 if mtif.get_named_type(None, "mystr2"):
     print(mtif._print(mtif.get_type_name(), pflags))

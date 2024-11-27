@@ -267,6 +267,7 @@ MODULES_NAMES += idd
 MODULES_NAMES += idp
 MODULES_NAMES += ieee
 MODULES_NAMES += kernwin
+MODULES_NAMES += libfuncs
 MODULES_NAMES += lines
 MODULES_NAMES += loader
 ifdef TESTABLE_BUILD
@@ -803,32 +804,46 @@ ifdef __LINUX__
 endif
 
 #----------------------------------------------------------------------
-ifdef TESTABLE_BUILD
-  API_CONTENTS = api_contents$(EXTRASUF1).brief
-else
-  API_CONTENTS = api_contents$(EXTRASUF1).full
-  API_CONTENTS_OPTS := --dump-doc
-endif
-ST_API_CONTENTS = $(F)$(API_CONTENTS)
-ST_API_CONTENTS_SUCCESS = $(ST_API_CONTENTS).success
-.PRECIOUS: $(ST_API_CONTENTS)
 
-api_contents: $(ST_API_CONTENTS_SUCCESS)
-ifeq ($(or $(__CODE_CHECKER__),$(NO_CMP_API),$(__ASAN__),$(IDAHOME),$(IDACLASS),$(DEMO_OR_FREE)),)
-$(ST_API_CONTENTS_SUCCESS): $(ALL_ST_WRAP_PY_FINAL) $(API_CONTENTS) tools/py_scanner.py
-	$(QDUMPAPI)$(PYTHON) tools/py_scanner.py --dump-kind $(API_CONTENTS_OPTS) --paths $(subst $(space),$(comma),$(ALL_ST_WRAP_PY_FINAL)) > $(ST_API_CONTENTS)
-  ifeq ($(OUT_OF_TREE_BUILD),)
-	$(Q)((diff -w $(API_CONTENTS) $(ST_API_CONTENTS)) > /dev/null && touch $@) || \
-          (echo "API CONTENTS CHANGED! update $(API_CONTENTS) or fix the API" && \
-           echo "(New API: $(ST_API_CONTENTS)) ***" && \
-           (diff -U 1 -w $(API_CONTENTS) $(ST_API_CONTENTS); true))
-  else
-	$(Q)touch $@
-  endif
+API_CONTENTS_BRIEF = api_contents$(EXTRASUF1).brief
+API_CONTENTS_FULL  = api_contents$(EXTRASUF1).full
+
+ST_API_CONTENTS_BRIEF = $(F)$(API_CONTENTS_BRIEF)
+ST_API_CONTENTS_FULL  = $(F)$(API_CONTENTS_FULL)
+ST_API_CONTENTS_BRIEF_SUCCESS = $(ST_API_CONTENTS_BRIEF).success
+ST_API_CONTENTS_FULL_SUCCESS  = $(ST_API_CONTENTS_FULL).success
+
+.PRECIOUS: $(ST_API_CONTENTS_BRIEF) $(ST_API_CONTENTS_FULL)
+
+ifdef TESTABLE_BUILD
+  DEFAULT_API_CONTENTS = $(API_CONTENTS_BRIEF)
 else
-$(ST_API_CONTENTS_SUCCESS): $(ALL_ST_WRAP_PY_FINAL) tools/py_scanner.py
-	$(Q)touch $@
+  DEFAULT_API_CONTENTS = $(API_CONTENTS_FULL)
 endif
+
+api_contents: $(DEFAULT_API_CONTENTS)
+
+define make-api-contents-rule
+  $(1): $(3)
+  ifeq ($(or $(__CODE_CHECKER__),$(NO_CMP_API),$(__ASAN__),$(IDAHOME),$(IDACLASS),$(IDAFREE)),)
+  $(3): $(ALL_ST_WRAP_PY_FINAL) tools/py_scanner.py
+	$(QDUMPAPI)$(PYTHON) tools/py_scanner.py --dump-kind $(4) --paths $(subst $(space),$(comma),$(ALL_ST_WRAP_PY_FINAL)) > $(2)
+    ifeq ($(OUT_OF_TREE_BUILD),)
+	$(Q)((diff -w $(1) $(2)) > /dev/null && touch $$@) || \
+          (echo "API CONTENTS CHANGED! update $(1) or fix the API" && \
+           echo "(New API: $(2)) ***" && \
+           (diff -U 1 -w $(1) $(2); true))
+    else
+	$(Q)touch $$@
+    endif
+  else
+  $(3): $(ALL_ST_WRAP_PY_FINAL) tools/py_scanner.py
+	$(Q)touch $$@
+  endif
+endef
+
+$(eval $(call make-api-contents-rule,$(API_CONTENTS_BRIEF),$(ST_API_CONTENTS_BRIEF),$(ST_API_CONTENTS_BRIEF_SUCCESS),))
+$(eval $(call make-api-contents-rule,$(API_CONTENTS_FULL),$(ST_API_CONTENTS_FULL),$(ST_API_CONTENTS_FULL_SUCCESS),--dump-doc))
 
 #-------------------------------------------------------------------------
 ST_API_CHECK_SUCCESS := $(F)api_check.success

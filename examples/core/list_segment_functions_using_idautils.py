@@ -47,5 +47,5 @@ def main():
     else:
         print("Please position the cursor within a segment")
 
-if __name__=='__main__':
+if __name__=="__main__":
     main()

@@ -161,6 +161,7 @@ def get_bytes(ea, size):
     Get the specified number of bytes of the program.
     @param ea: program address
     @param size: number of bytes to return
+    @param gmb_flags: OR'ed combination of GMB_* values (defaults to GMB_READALL)
     @return: the bytes (as bytes object), or None in case of failure
     """
     pass
@@ -184,6 +185,7 @@ def get_bytes_and_mask(ea, size, mask):
     specifying what bytes are defined and what bytes are not.
     @param ea: program address
     @param size: number of bytes to return
+    @param gmb_flags: OR'ed combination of GMB_* values (defaults to GMB_READALL)
     @return: a tuple (bytes, mask), or None in case of failure.
              Both 'bytes' and 'mask' are 'str' instances.
     """

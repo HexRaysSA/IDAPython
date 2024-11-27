@@ -403,14 +403,17 @@ class Tags(object):
     IMPORTS     = "imports"
     SEE_ALSO    = "see_also"
     AUTHOR      = "author"
+    LEVEL       = "level"
 
     # tags that can be used in the template (with the {{example.XXX}} syntax)
     ALL_TAGS = set([NAME, PATH, SUMMARY, DESCRIPTION, CATEGORY, \
-                    KEYWORDS, USES, IMPORTS, SEE_ALSO, AUTHOR])
+                    KEYWORDS, USES, IMPORTS, SEE_ALSO, AUTHOR, \
+                    LEVEL])
 
     # tags that can be used in the examples' docstrings
     IN_DOCSTRING = set([SUMMARY, DESCRIPTION, CATEGORY, \
-                        KEYWORDS, USES, SEE_ALSO, AUTHOR])
+                        KEYWORDS, USES, SEE_ALSO, AUTHOR, \
+                        LEVEL])
 
     def __init__(self):
         self.items = {}

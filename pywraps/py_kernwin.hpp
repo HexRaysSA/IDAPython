@@ -208,6 +208,8 @@ static int py_load_custom_icon_data(PyObject *data, const char *format)
 def free_custom_icon(icon_id):
     """
     Frees an icon loaded with load_custom_icon()
+
+    @param icon_id: The ID of the icon to free
     """
     pass
 #</pydoc>
@@ -321,8 +323,8 @@ def ask_str(defval, hist, prompt):
     """
     Asks for a long text
 
-    @param hist:   history id
     @param defval: The default value
+    @param hist:   history id
     @param prompt: The prompt value
     @return: None or the entered string
     """
@@ -354,6 +356,7 @@ def process_ui_action(name):
     Invokes an IDA UI action by name
 
     @param name:  action name
+    @param flags: reserved
     @return: Boolean
     """
     pass
@@ -1030,6 +1033,8 @@ def set_nav_colorizer(callback):
             return long(~orig)
 
         ida_colorizer = idaapi.set_nav_colorizer(my_colorizer)
+
+    @param callback: the new colorizer
     """
     pass
 #</pydoc>
@@ -1108,6 +1113,10 @@ def call_nav_colorizer(colorizer, ea, nbytes):
     """
     To be used with the IDA-provided colorizer, that is
     returned as result of the first call to set_nav_colorizer().
+
+    @param colorizer: the Python colorizer to call
+    @param ea: the address to colorize
+    @param nbytes: the size of the range to colorize
     """
     pass
 #</pydoc>

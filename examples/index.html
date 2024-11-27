@@ -150,6 +150,50 @@ to be available (through their
       </ul>
         </div>
       </div>
+      <div class="example-entry collapsed-entry" name="add_frame_member">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/add_frame_member.py">add_frame_member</a>: <i>Programatically add a new frame member to an existing frame.</i>
+        </div>
+        <div class="details" id="DIV_add_frame_member">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we show a way to add a new frame member (a pointer to
+ an uint64) inside a wide enough gap in the frame:
+* Get the function object surrounding cursor location.
+* Use this function to retrieve the corresponding frame object.
+* Find a wide enough gap to create our new member.
+* If found, we use cal_frame_offset() to get the actual
+  offset in the frame structure.
+* Use the previous result to add the new member.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically add a new frame member to an existing frame.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/add_frame_member.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_frame.add_frame_member</li>
+                <li>ida_frame.calc_frame_offset</li>
+                <li>ida_frame.get_func_frame</li>
+                <li>ida_funcs.get_func</li>
+                <li>ida_range.rangeset_t</li>
+                <li>ida_typeinf.BTF_UINT64</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>idc.here</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
       <div class="example-entry collapsed-entry" name="add_hotkey">
         <div>
           <span class="exp-col expander">&#x25B9;</span>
@@ -236,6 +280,50 @@ should be preferred.
       </ul>
         </div>
       </div>
+      <div class="example-entry collapsed-entry" name="apply_callee_tinfo">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/apply_callee_tinfo.py">apply_callee_tinfo</a>: <i>Programatically apply locally created function type info to all the addresses refering to that function.</i>
+        </div>
+        <div class="details" id="DIV_apply_callee_tinfo">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Open the private type libary.
+* Load its declaration in the type library by parsing its declaration and
+keep the return tuple for future use.
+* Deserialize the type info stored in the returned tuple.
+* Get the address of the function.
+* Get the address of the code reference to the function and apply
+the type info there.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically apply locally created function type info to all the addresses refering to that function.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/apply_callee_tinfo.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_idaapi.BADADDR</li>
+                <li>ida_name.get_name_ea</li>
+                <li>ida_typeinf.PT_REPLACE</li>
+                <li>ida_typeinf.apply_callee_tinfo</li>
+                <li>ida_typeinf.get_idati</li>
+                <li>ida_typeinf.idc_parse_decl</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>idautils.CodeRefsTo</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
       <div class="example-entry collapsed-entry" name="auto_instantiate_widget_plugin">
         <div>
           <span class="exp-col expander">&#x25B9;</span>
@@ -290,6 +378,107 @@ There are 2 ways to use this example:
                 <li>ida_kernwin.register_action</li>
                 <li>ida_kernwin.simplecustviewer_t</li>
                 <li>ida_kernwin.simplecustviewer_t.Create</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="change_stkvar_name">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/change_stkvar_name.py">change_stkvar_name</a>: <i>Programatically change the name of an *existing* stack variable.</i>
+        </div>
+        <div class="details" id="DIV_change_stkvar_name">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we demonstrate a way to change the name of a
+stack variable:
+* Get the function object surrounding cursor location.
+* Use this function to retrieve the corresponding frame object.
+* Find the frame member matching the given name.
+* Using its offset in the frame structure object, calculate
+  the actual stack delta.
+* Use the previous result to redefine the stack variable name if
+  it is not a special or argument member.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically change the name of an *existing* stack variable.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/change_stkvar_name.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_frame.define_stkvar</li>
+                <li>ida_frame.get_func_frame</li>
+                <li>ida_frame.is_funcarg_off</li>
+                <li>ida_frame.is_special_frame_member</li>
+                <li>ida_frame.soff_to_fpoff</li>
+                <li>ida_funcs.get_func</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udm_t</li>
+                <li>idc.here</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="change_stkvar_type">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/change_stkvar_type.py">change_stkvar_type</a>: <i>Programatically change the type and the name of a stack variable. For this sample we will use RtlImageNtHeader from ntdll.dll.</i>
+        </div>
+        <div class="details" id="DIV_change_stkvar_type">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we show a way to change the type and the name
+of a stack variable. In this case we will take advantage of the
+fact that RtlImageNtHeader calls RtlImageNtHeaderEx which takes
+a pointer to PIMAGE_NT_HEADERS as its fourth parameter and, for
+this, uses a stack variable of its caller.
+* Get the function object for RtlImageNtHeader.
+* Iterate through the function item to localize the load of the
+stack variable address before the call to RtlImageNtHeaderEx. We
+keep this information.
+* Localize the call and take advantage of the previoulsy stored
+instruction to get the stack variable index in the frame.
+* Set the type and rename the stack variable.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically change the type and the name of a stack variable. For this sample we will use RtlImageNtHeader from ntdll.dll.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/change_stkvar_type.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_allins.NN_call</li>
+                <li>ida_allins.NN_lea</li>
+                <li>ida_frame.get_func_frame</li>
+                <li>ida_funcs.func_item_iterator_t</li>
+                <li>ida_funcs.get_func</li>
+                <li>ida_funcs.get_func_name</li>
+                <li>ida_ida.inf_get_procname</li>
+                <li>ida_ida.inf_is_64bit</li>
+                <li>ida_idaapi.BADADDR</li>
+                <li>ida_name.get_name_ea</li>
+                <li>ida_typeinf.BTF_STRUCT</li>
+                <li>ida_typeinf.TERR_OK</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_ua.decode_insn</li>
+                <li>ida_ua.insn_t</li>
               </ul>
             </li>
 
@@ -361,6 +550,220 @@ across 4 predefined colors (and return to the "no color" state.)
       </ul>
         </div>
       </div>
+      <div class="example-entry collapsed-entry" name="create_array">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/create_array.py">create_array</a>: <i>Programatically create an array.</i>
+        </div>
+        <div class="details" id="DIV_create_array">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we create an array using both versions of
+create_array tinfo_t method.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically create an array.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/create_array.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_typeinf.BTF_INT</li>
+                <li>ida_typeinf.array_type_data_t</li>
+                <li>ida_typeinf.tinfo_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="create_bfstruct">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/create_bfstruct.py">create_bfstruct</a>: <i>Programatically create a bitfield structure.</i>
+        </div>
+        <div class="details" id="DIV_create_bfstruct">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+ * Create a bitfield structure. In the present case the bitfield is an int32
+made of three 'members' spanning it entirely:
+    bit0->bit19: bf1
+    bit20->bit25: bf2
+    bit26->bit31: bf3
+ * For each member create a repeatable comment.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically create a bitfield structure.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/create_bfstruct.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udm_t</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="create_bmenum">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/create_bmenum.py">create_bmenum</a>: <i>Programatically create a bitmask enum.</i>
+        </div>
+        <div class="details" id="DIV_create_bmenum">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we create a bitmask enumeration member by member.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically create a bitmask enum.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/create_bmenum.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_typeinf.BTE_BITMASK</li>
+                <li>ida_typeinf.BTE_HEX</li>
+                <li>ida_typeinf.tinfo_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="create_libssh2_til">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/create_libssh2_til.py">create_libssh2_til</a>: <i>Programatically create a til file.</i>
+        </div>
+        <div class="details" id="DIV_create_libssh2_til">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+ * We create a new libssh2-64.til file where we load some libssh2
+   64-bit structures.
+ * Once the file has been created, it can copied in the IDA install
+   til directory or in the user IDA til directory.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically create a til file.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/create_libssh2_til.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_typeinf.HTI_DCL</li>
+                <li>ida_typeinf.HTI_PAKDEF</li>
+                <li>ida_typeinf.compact_til</li>
+                <li>ida_typeinf.free_til</li>
+                <li>ida_typeinf.new_til</li>
+                <li>ida_typeinf.parse_decls</li>
+                <li>ida_typeinf.store_til</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="create_struct_by_member">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/create_struct_by_member.py">create_struct_by_member</a>: <i>Programatically create structures and/or unions.</i>
+        </div>
+        <div class="details" id="DIV_create_struct_by_member">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Create a structure by building it member by members. For this we
+first create a udt (user data type) object. We, then, populate it with
+udms (user data type members). Finally we actually store it in the local
+types via a call to set_named_type.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically create structures and/or unions.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/create_struct_by_member.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_typeinf.BTF_UINT32</li>
+                <li>ida_typeinf.NTF_TYPE</li>
+                <li>ida_typeinf.del_named_type</li>
+                <li>ida_typeinf.tinfo_errstr</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="create_struct_by_parsing">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/create_struct_by_parsing.py">create_struct_by_parsing</a>: <i>Programatically create structures.</i>
+        </div>
+        <div class="details" id="DIV_create_struct_by_parsing">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we create a structure using the "parsing" method.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically create structures.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/create_struct_by_parsing.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_typeinf.NTF_TYPE</li>
+                <li>ida_typeinf.del_named_type</li>
+                <li>ida_typeinf.idc_parse_types</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
       <div class="example-entry collapsed-entry" name="create_structure_programmatically">
         <div>
           <span class="exp-col expander">&#x25B9;</span>
@@ -409,6 +812,95 @@ members of different types.
 
 
           <li>Author: Gergely Erdelyi (gergely.erdelyi@d-dome.net)</li>
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="create_union_by_member">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/create_union_by_member.py">create_union_by_member</a>: <i>Programatically create a union.</i>
+        </div>
+        <div class="details" id="DIV_create_union_by_member">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Create a union by building it member by member. The main difference with
+the previous step is that we have to set is_union to true.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically create a union.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/create_union_by_member.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_typeinf.BTF_CHAR</li>
+                <li>ida_typeinf.BTF_FLOAT</li>
+                <li>ida_typeinf.BTF_INT32</li>
+                <li>ida_typeinf.BTF_UNION</li>
+                <li>ida_typeinf.NTF_TYPE</li>
+                <li>ida_typeinf.PRTYPE_DEF</li>
+                <li>ida_typeinf.PRTYPE_MULTI</li>
+                <li>ida_typeinf.PRTYPE_TYPE</li>
+                <li>ida_typeinf.del_named_type</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udm_t</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="create_user_shared_data">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/create_user_shared_data.py">create_user_shared_data</a>: <i>Programatically create a segment hodling the user shared data area in ntdll.dll.</i>
+        </div>
+        <div class="details" id="DIV_create_user_shared_data">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we show how to create, set type and name of
+a user shared data region in an ntdll IDB:
+* Load the `_KUSER_SHARED_DATA` data type from a type info
+  library shipped with IDA, and import it into the IDB's "local types"
+* Create a data segment with UserSharedData as its name.
+* Apply the type to the start of the newly created segment base
+  address.
+* Set the address name.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically create a segment hodling the user shared data area in ntdll.dll.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/create_user_shared_data.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_name.set_name</li>
+                <li>ida_segment.add_segm_ex</li>
+                <li>ida_segment.saRelPara</li>
+                <li>ida_segment.scPub</li>
+                <li>ida_segment.segment_t</li>
+                <li>ida_segment.setup_selector</li>
+                <li>ida_typeinf.TINFO_DEFINITE</li>
+                <li>ida_typeinf.apply_tinfo</li>
+                <li>ida_typeinf.free_til</li>
+                <li>ida_typeinf.load_til</li>
+              </ul>
+            </li>
+
+
       </ul>
         </div>
       </div>
@@ -497,6 +989,40 @@ one format for a specific 'custom data type'.)
                 <li>ida_nalt.get_input_file_path</li>
                 <li>ida_netnode.netnode</li>
                 <li>ida_typeinf.tinfo_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="del_struct_members">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/del_struct_members.py">del_struct_members</a>: <i>Programatically delete a range of members in a structure</i>
+        </div>
+        <div class="details" id="DIV_del_struct_members">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we first create a structure with many members, and then
+remove all those that fall within a range
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically delete a range of members in a structure</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/del_struct_members.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_typeinf.STRMEM_OFFSET</li>
+                <li>ida_typeinf.TERR_OK</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udm_t</li>
               </ul>
             </li>
 
@@ -745,6 +1271,137 @@ default 1-byte-per-char encoding, or as UTF-16.)
       </ul>
         </div>
       </div>
+      <div class="example-entry collapsed-entry" name="func_ti_changed_listener">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/func_ti_changed_listener.py">func_ti_changed_listener</a>: <i>Display information about function type information changes.</i>
+        </div>
+        <div class="details" id="DIV_func_ti_changed_listener">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we will create an IDB hook that intercepts `ti_changed`
+IDB events, and if it is a function prototype that changed, print it.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Display information about function type information changes.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/func_ti_changed_listener.py">GitHub</a></li>
+            <li>Keywords:
+            IDB_Hooks
+            </li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_funcs.get_func_name</li>
+                <li>ida_idp.IDB_Hooks</li>
+                <li>ida_typeinf.tinfo_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="gap_size_align_snippet">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/gap_size_align_snippet.py">gap_size_align_snippet</a>: <i></i>
+        </div>
+        <div class="details" id="DIV_gap_size_align_snippet">
+
+<pre>
+
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: </li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/gap_size_align_snippet.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_range.rangeset_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="get_best_fit_member">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/get_best_fit_member.py">get_best_fit_member</a>: <i>Ida_struct.get_best_fit_member altenative.</i>
+        </div>
+        <div class="details" id="DIV_get_best_fit_member">
+
+<pre>
+The goal of this script is to provide a way to figure out
+what structure member, is most likely referenced by an offset.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Ida_struct.get_best_fit_member altenative.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/get_best_fit_member.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="get_innermost_member">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/get_innermost_member.py">get_innermost_member</a>: <i>Ida_struct.get_innermost_member altenative.</i>
+        </div>
+        <div class="details" id="DIV_get_innermost_member">
+
+<pre>
+The goal of this script is to provide/test an alternative
+to ida_struct.get_innermost_member.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Ida_struct.get_innermost_member altenative.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/get_innermost_member.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_idaapi.BADADDR</li>
+                <li>ida_typeinf.NTF_TYPE</li>
+                <li>ida_typeinf.del_named_type</li>
+                <li>ida_typeinf.idc_parse_types</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
       <div class="example-entry collapsed-entry" name="idapythonrc">
         <div>
           <span class="exp-col expander">&#x25B9;</span>
@@ -770,6 +1427,92 @@ IDAPython is done successfully initializing.
 
 
 
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="import_type_from_til">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/import_type_from_til.py">import_type_from_til</a>: <i>Progarmatically load a til and a type.</i>
+        </div>
+        <div class="details" id="DIV_import_type_from_til">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+ In this script, we:
+ * ask the user for a specific til to be lodaed
+ * if successfully loaded ask the user for a type name to be imported.
+ * append the type to the local types.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Progarmatically load a til and a type.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/import_type_from_til.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_kernwin.ask_str</li>
+                <li>ida_netnode.BADNODE</li>
+                <li>ida_typeinf.ADDTIL_DEFAULT</li>
+                <li>ida_typeinf.TIL_ADD_ALREADY</li>
+                <li>ida_typeinf.TIL_ADD_OK</li>
+                <li>ida_typeinf.add_til</li>
+                <li>ida_typeinf.get_idati</li>
+                <li>ida_typeinf.tinfo_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="insert_gap">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/insert_gap.py">insert_gap</a>: <i>Programatically insert a gap of specified size at specified offset.</i>
+        </div>
+        <div class="details" id="DIV_insert_gap">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Create a function that takes three arguments: a structure name,
+an offset in bytes and a size in byte.
+* In this function we first retrieve the type info object of the structure,
+get the udt details, find the idx of the member at the specified offset,
+create a gap "member" using udm_t__make_gap(), insert it into the udt object,
+create the udt inside the tif object and finally save the type information.
+* To exercise this script just change the name of the structure to the one
+that suites you.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically insert a gap of specified size at specified offset.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/insert_gap.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_typeinf.NTF_REPLACE</li>
+                <li>ida_typeinf.NTF_TYPE</li>
+                <li>ida_typeinf.STRMEM_OFFSET</li>
+                <li>ida_typeinf.TERR_OK</li>
+                <li>ida_typeinf.save_tinfo</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udm_t</li>
+                <li>ida_typeinf.udm_t__make_gap</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+              </ul>
+            </li>
 
 
       </ul>
@@ -852,6 +1595,125 @@ type.
                 <li>ida_kernwin.get_widget_title</li>
                 <li>ida_kernwin.register_action</li>
                 <li>ida_moves.bookmarks_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="list_enum_member">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/list_enum_member.py">list_enum_member</a>: <i>Programatically list a user selected enumeration.</i>
+        </div>
+        <div class="details" id="DIV_list_enum_member">
+
+<pre>
+The goal of this script is to demaonstrate how to
+programatically list members of an enumeration. For
+this we:
+* ask the user to enter the of an enumeration
+* verify that the entered name is indeed aan enumeration
+* get the enumeration details object
+* enumerate the members.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically list a user selected enumeration.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/list_enum_member.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_kernwin.ask_str</li>
+                <li>ida_typeinf.BTF_ENUM</li>
+                <li>ida_typeinf.enum_type_data_t</li>
+                <li>ida_typeinf.get_idati</li>
+                <li>ida_typeinf.tinfo_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="list_frame_info">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/list_frame_info.py">list_frame_info</a>: <i>Programatically list some frame information.</i>
+        </div>
+        <div class="details" id="DIV_list_frame_info">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Get the function object surrounding the cursor location.
+* Get the corresponding frame object.
+* Get the details about the frame.
+* Iterate them and display their:
+    - Index
+    - Name
+    - Offset (starting and ending in bytes)
+    - Type
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically list some frame information.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/list_frame_info.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_frame.get_func_frame</li>
+                <li>ida_funcs.get_func</li>
+                <li>ida_funcs.get_func_name</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+                <li>idc.here</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="list_func_details">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/list_func_details.py">list_func_details</a>: <i>Programatically displays information about functions types.</i>
+        </div>
+        <div class="details" id="DIV_list_func_details">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we demonstrate how to list a function return type
+allong with its parameters types and name if any. We do this for
+all the functions found in the database.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically displays information about functions types.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/list_func_details.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_funcs.get_func_qty</li>
+                <li>ida_kernwin.msg_clear</li>
+                <li>ida_nalt.get_tinfo</li>
+                <li>ida_typeinf.func_type_data_t</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>idautils.Functions</li>
               </ul>
             </li>
 
@@ -1162,9 +2024,7 @@ next_to() (or higher level utilities such as idautils.XrefsTo)
                 <li>ida_kernwin.get_highlight</li>
                 <li>ida_kernwin.get_screen_ea</li>
                 <li>ida_kernwin.register_action</li>
-                <li>ida_typeinf.STRMEM_NAME</li>
                 <li>ida_typeinf.tinfo_t</li>
-                <li>ida_typeinf.udm_t</li>
                 <li>ida_ua.decode_insn</li>
                 <li>ida_ua.insn_t</li>
               </ul>
@@ -1208,6 +2068,299 @@ this will not require that the "Strings" window is opened & available.
               <li><a class="ex_link" href="#show_selected_strings">show_selected_strings</a></li>
             </ul>
           </li>
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="list_struct_accesses">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/list_struct_accesses.py">list_struct_accesses</a>: <i></i>
+        </div>
+        <div class="details" id="DIV_list_struct_accesses">
+
+<pre>
+
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: </li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/list_struct_accesses.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_bytes.get_full_flags</li>
+                <li>ida_bytes.get_stroff_path</li>
+                <li>ida_bytes.is_stroff</li>
+                <li>ida_nalt.MAXSTRUCPATH</li>
+                <li>ida_pro.sval_pointer</li>
+                <li>ida_pro.tid_array</li>
+                <li>ida_typeinf.STRMEM_INDEX</li>
+                <li>ida_typeinf.get_tid_name</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udm_t</li>
+                <li>ida_ua.decode_insn</li>
+                <li>ida_ua.insn_t</li>
+                <li>ida_ua.o_imm</li>
+                <li>ida_ua.o_void</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="list_struct_member">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/list_struct_member.py">list_struct_member</a>: <i>Programatically list the members of a user provided structure name.</i>
+        </div>
+        <div class="details" id="DIV_list_struct_member">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Ask the user for a structure name. It must already be present in the
+local types.
+* Retrieve the structure type info from the local type
+* Extract its type details (udt)
+* Iterates it members and prints their names.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically list the members of a user provided structure name.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/list_struct_member.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_kernwin.ask_str</li>
+                <li>ida_typeinf.BTF_STRUCT</li>
+                <li>ida_typeinf.get_idati</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="list_struct_xrefs">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/list_struct_xrefs.py">list_struct_xrefs</a>: <i>Programatically list the addresses where a particular structure is referenced.</i>
+        </div>
+        <div class="details" id="DIV_list_struct_xrefs">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Ask the user for a structure name. It must already be present in the
+local types.
+* Get its tid
+* Create the list of all the reference.
+* Print it
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically list the addresses where a particular structure is referenced.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/list_struct_xrefs.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_kernwin.choose_struct</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_xref.xrefblk_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="list_union_member">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/list_union_member.py">list_union_member</a>: <i>Programatically list the members of a user provided union name.</i>
+        </div>
+        <div class="details" id="DIV_list_union_member">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+* Ask the user for a union name. It must already be present in the
+local types.
+* Retrieve the union type info from the local type
+* Extract its type details (udt)
+* Iterates it members and prints their names.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically list the members of a user provided union name.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/list_union_member.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_kernwin.ask_str</li>
+                <li>ida_typeinf.BTF_UNION</li>
+                <li>ida_typeinf.get_idati</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="mark_func_spoiled">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/mark_func_spoiled.py">mark_func_spoiled</a>: <i>Programmatically change the signature of a function to __spoils</i>
+        </div>
+        <div class="details" id="DIV_mark_func_spoiled">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+At least two possibilies are offered in order to indicate that a function
+spoils registers (excluding the "normal" ones):
+* by parsing a declaration (we assume that the func object has already been created):
+    func_tfinfo = ida_typeinf.tinfo_t()
+    func_tinfo.parse('int _spoils<rsi> main();')
+    ida_typeinf.apply_tinfo(func.start_ea, func_tinfo, ida_typeinf.TINFO_DEFINITE)
+* by editing the tinfo_t object spoiled registers vector and flags. This script uses
+this method.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programmatically change the signature of a function to __spoils</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/mark_func_spoiled.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_funcs.get_func</li>
+                <li>ida_idp.parse_reg_name</li>
+                <li>ida_idp.reg_info_t</li>
+                <li>ida_kernwin.get_screen_ea</li>
+                <li>ida_nalt.get_tinfo</li>
+                <li>ida_typeinf.FTI_SPOILED</li>
+                <li>ida_typeinf.TINFO_DEFINITE</li>
+                <li>ida_typeinf.apply_tinfo</li>
+                <li>ida_typeinf.func_type_data_t</li>
+                <li>ida_typeinf.tinfo_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="operand_to_struct_member">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/operand_to_struct_member.py">operand_to_struct_member</a>: <i>Programatically convert an operand to a structure member.</i>
+        </div>
+        <div class="details" id="DIV_operand_to_struct_member">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+ * ask the user to choose the structure that will be used for
+ the conversion.
+ * build the structure path and call ida_bytes.op_stroff. In case
+ an enum is found a modal chooser is displayed in order to select
+ a member.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically convert an operand to a structure member.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/operand_to_struct_member.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_bytes.op_stroff</li>
+                <li>ida_kernwin.Choose</li>
+                <li>ida_kernwin.Choose.CHCOL_HEX</li>
+                <li>ida_kernwin.Choose.CHCOL_PLAIN</li>
+                <li>ida_kernwin.choose_struct</li>
+                <li>ida_kernwin.get_opnum</li>
+                <li>ida_kernwin.get_screen_ea</li>
+                <li>ida_pro.tid_array</li>
+                <li>ida_typeinf.STRMEM_OFFSET</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udm_t</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+                <li>ida_ua.decode_insn</li>
+                <li>ida_ua.insn_t</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="print_stkvar_xrefs">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/print_stkvar_xrefs.py">print_stkvar_xrefs</a>: <i>Programatically list the xref for each stack variables in the frame.</i>
+        </div>
+        <div class="details" id="DIV_print_stkvar_xrefs">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we demonstrate how to list each stack variables
+xref:
+* Get the function object surrounding cursor location.
+* Use this function to retrieve the corresponding frame object.
+* For each frame element:
+    - Build the stack variable xref list
+    - Print it.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically list the xref for each stack variables in the frame.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/print_stkvar_xrefs.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_frame.build_stkvar_xrefs</li>
+                <li>ida_frame.get_func_frame</li>
+                <li>ida_frame.xreflist_t</li>
+                <li>ida_funcs.get_func</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+                <li>idc.here</li>
+              </ul>
+            </li>
+
 
       </ul>
         </div>
@@ -1337,6 +2490,55 @@ Register (possibly repeating) timers.
       </ul>
         </div>
       </div>
+      <div class="example-entry collapsed-entry" name="setpehdr">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/setpehdr.py">setpehdr</a>: <i>Progarmmatically load the DOS and PE headers in a binary loaded PE executable.</i>
+        </div>
+        <div class="details" id="DIV_setpehdr">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we:
+    * load a PE64 file in binary mode
+    * import some types from the mssdk64 til
+    * apply these types at the correct ofsset in the DB
+    * finally, rebase the program based on the information stored
+    in the ImageBase field of the IMAGE_OPTIONAL_HEADER64.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Progarmmatically load the DOS and PE headers in a binary loaded PE executable.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/setpehdr.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_bytes.create_struct</li>
+                <li>ida_bytes.get_dword</li>
+                <li>ida_bytes.get_qword</li>
+                <li>ida_bytes.get_word</li>
+                <li>ida_hexrays.get_type</li>
+                <li>ida_name.set_name</li>
+                <li>ida_netnode.BADNODE</li>
+                <li>ida_segment.MSF_FIXONCE</li>
+                <li>ida_segment.rebase_program</li>
+                <li>ida_typeinf.ADDTIL_DEFAULT</li>
+                <li>ida_typeinf.BTF_STRUCT</li>
+                <li>ida_typeinf.add_til</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.udt_type_data_t</li>
+                <li>idc.import_type</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
       <div class="example-entry collapsed-entry" name="trigger_actions_programmatically">
         <div>
           <span class="exp-col expander">&#x25B9;</span>
@@ -1373,6 +2575,47 @@ menu, so as to keep focus on "IDA View-A" and have the
                 <li>ida_kernwin.execute_ui_requests</li>
                 <li>ida_kernwin.msg</li>
                 <li>ida_kernwin.process_ui_action</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="visit_tinfo">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="core/visit_tinfo.py">visit_tinfo</a>: <i>Programatically visit a type.</i>
+        </div>
+        <div class="details" id="DIV_visit_tinfo">
+
+<pre>
+The goal of this script is to demonstrate some usage of the type API.
+In this script, we show an example of tinfo_visitor_t to list
+a user define type members. In case of an array or a pointer we
+do not visit the child by calling prune_now() visitor member
+method.
+</pre>
+
+          <ul>
+            <li>Category: core</li>
+            <li>Summary: Programatically visit a type.</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/core/visit_tinfo.py">GitHub</a></li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_netnode.BADNODE</li>
+                <li>ida_typeinf.ADDTIL_DEFAULT</li>
+                <li>ida_typeinf.TVST_DEF</li>
+                <li>ida_typeinf.add_til</li>
+                <li>ida_typeinf.array_type_data_t</li>
+                <li>ida_typeinf.get_idati</li>
+                <li>ida_typeinf.tinfo_t</li>
+                <li>ida_typeinf.tinfo_visitor_t</li>
+                <li>idc.import_type</li>
               </ul>
             </li>
 
@@ -3230,6 +4473,39 @@ We add support for assembling the following pseudo instructions:
               <ul>
                 <li>ida_idp.IDP_Hooks</li>
                 <li>idautils.DecodeInstruction</li>
+              </ul>
+            </li>
+
+
+      </ul>
+        </div>
+      </div>
+      <div class="example-entry collapsed-entry" name="log_idp_events">
+        <div>
+          <span class="exp-col expander">&#x25B9;</span>
+          <span class="exp-col collapser" style="display:none">&#x25BF;</span>
+        <a href="idphooks/log_idp_events.py">log_idp_events</a>: <i>Logging IDP events</i>
+        </div>
+        <div class="details" id="DIV_log_idp_events">
+
+<pre>
+These hooks will be notified about IDP events, and
+dump their information to the "Output" window
+</pre>
+
+          <ul>
+            <li>Category: idphooks</li>
+            <li>Summary: Logging IDP events</li>
+            <li>View on <a href="https://github.com/idapython/src/blob/master/examples/idphooks/log_idp_events.py">GitHub</a></li>
+            <li>Keywords:
+            IDP_Hooks
+            </li>
+
+
+
+            <li>APIs used
+              <ul>
+                <li>ida_idp.IDP_Hooks</li>
               </ul>
             </li>
 

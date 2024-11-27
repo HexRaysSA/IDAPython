@@ -64,7 +64,7 @@ class pascal_data_format(ida_bytes.data_format_t):
         for ch in value[1:]:
             b = ord(ch) if sys.version_info.major < 3 else ch
             if b < 0x20 or b > 128:
-                o.append(r'\x%02x' % b)
+                o.append(r"\x%02x" % b)
             else:
                 o.append(ch)
         o.append('"')
@@ -111,8 +111,8 @@ class simplevm_data_format(ida_bytes.data_format_t):
             menu_name)
 
     # Some tables for the disassembler
-    INST = {1: 'add', 2: 'mul', 3: 'sub', 4: 'xor', 5: 'mov'}
-    REGS = {1: 'r1', 2: 'r2', 3: 'r3'}
+    INST = {1: "add", 2: "mul", 3: "sub", 4: "xor", 5: "mov"}
+    REGS = {1: "r1", 2: "r2", 3: "r3"}
     def disasm(self, inst):
         """A simple local disassembler. In reality one can use a full-blown disassembler to render the text"""
         opbyte = ord(inst[0]) if sys.version_info.major < 3 else inst[0]
@@ -125,7 +125,7 @@ class simplevm_data_format(ida_bytes.data_format_t):
         if r2 == 0:
             if len(inst) != 5:
                 return None
-            imm = struct.unpack_from('L', inst, 1)[0]
+            imm = struct.unpack_from("L", inst, 1)[0]
             sz  = 5
         else:
             imm = None
@@ -226,7 +226,7 @@ new_formats = [
 ]
 
 try:
-    if platform.system() == 'Windows':
+    if platform.system() == "Windows":
         new_formats.append((rsrc_string_format(),))
 except:
     pass

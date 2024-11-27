@@ -169,6 +169,9 @@ class idb_logger_hooks_t(ida_idp.IDB_Hooks):
     def idasgn_loaded(self, sig_name):
         return self._log()
 
+    def idasgn_matched_ea(self, ea, name, lib):
+        return self._log()
+
     def item_color_changed(self, ea, color):
         return self._log()
 
@@ -297,7 +300,6 @@ class idb_logger_hooks_t(ida_idp.IDB_Hooks):
 
     def frame_expanded(self, func_ea, udm_tid, delta):
         return self._log()
-
 
 idb_hooks = idb_logger_hooks_t()
 idb_hooks.hook()

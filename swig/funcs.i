@@ -5,7 +5,6 @@
 
 // FIXME: Are these really useful?
 %ignore iterate_func_chunks;
-%ignore get_idasgn_header_by_short_name;
 
 // Kernel-only & unexported symbols
 %ignore determine_rtl;
