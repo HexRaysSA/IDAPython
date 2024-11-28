@@ -1,5 +1,5 @@
 """
-summary: Programatically create an array.
+summary: Programmatically create an array.
 
 description:
     The goal of this script is to demonstrate some usage of the type API.

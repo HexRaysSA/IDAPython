@@ -51,7 +51,7 @@ print("Set member representation to octal:",
 
 # Test ASCII type
 udm = ida_typeinf.udm_t("tascii", ida_typeinf.BTF_INT64, tif.get_size() * 8)
-udm.type.parse('char tascii[8] __strlit(C,"windows-1252");')  # no other way?
+udm.type.parse('char tascii[8] __strlit(C,"windows-1252");')
 print(f"{udm.name}:", ida_typeinf.tinfo_errstr(tif.add_udm(udm)))
 
 # Test struct member type by preparing the whole structure at once

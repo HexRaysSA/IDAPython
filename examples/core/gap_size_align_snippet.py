@@ -1,3 +1,13 @@
+"""
+summary: gaps & alignment detection in structures.
+
+description:
+    The goal of this script is to illustrate ways to detect gaps & alignments
+    in structures, from a structure name & (byte) offset.
+
+level: intermediate
+"""
+
 import ida_typeinf
 import ida_range
 

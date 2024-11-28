@@ -15,7 +15,6 @@ description:
     that suites you.
 """
 import ida_typeinf
-import ida_kernwin
 
 def insert_gap(struct_name: str, offset: int, size: int):
     tif = ida_typeinf.tinfo_t()

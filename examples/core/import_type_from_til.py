@@ -2,7 +2,7 @@
 summary: Progarmatically load a til and a type.
 
 description:
-   The goal of this script is to demonstrate some usage of the type API. 
+   The goal of this script is to demonstrate some usage of the type API.
     In this script, we:
     * ask the user for a specific til to be lodaed
     * if successfully loaded ask the user for a type name to be imported.
@@ -14,11 +14,14 @@ import ida_netnode
 import ida_typeinf
 import ida_kernwin
 
-til_name = ida_kernwin.ask_str("Dummy til name", 0, "Enter a til filename:")
-if til_name:
+def main():
+    til_name = ida_kernwin.ask_str("Dummy til name", 0, "Enter a til filename:")
+    if not til_name:
+        print("No til name provided.")
+        return
+
     ret = ida_typeinf.add_til(til_name, ida_typeinf.ADDTIL_DEFAULT)
     if ret == ida_typeinf.TIL_ADD_OK or ret == ida_typeinf.TIL_ADD_ALREADY:
-        til = ida_typeinf.get_idati()
         type_name = ida_kernwin.ask_str("Dummy type name", 0, "Enter a type name")
         if type_name:
             tid = ida_netnode.BADNODE
@@ -33,3 +36,6 @@ if til_name:
             print(f"No type name provided.")
     else:
         print(f"{til_name} not added.")
+
+
+main()

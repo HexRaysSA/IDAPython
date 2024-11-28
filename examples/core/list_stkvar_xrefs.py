@@ -24,31 +24,36 @@ class list_stkvar_xrefs_ah_t(ida_kernwin.action_handler_t):
     def activate(self, ctx):
         cur_ea = ida_kernwin.get_screen_ea()
         pfn = ida_funcs.get_func(cur_ea)
-        if pfn:
-            v = ida_kernwin.get_current_viewer()
-            result = ida_kernwin.get_highlight(v)
-            if result:
-                stkvar_name, _ = result
-                frame = ida_typeinf.tinfo_t()
-                pfn = ida_funcs.get_func(cur_ea)
-                frame.get_func_frame(pfn)
-                stkvar_idx, stkvar = frame.get_udm(stkvar_name)
-                if stkvar_idx >= 0:
-                    for ea in pfn:
-                        F = ida_bytes.get_flags(ea)
-                        for n in range(ida_ida.UA_MAXOP):
-                            if not ida_bytes.is_stkvar(F, n):
-                                continue
-                            insn = ida_ua.insn_t()
-                            if not ida_ua.decode_insn(insn, ea):
-                                continue
-                            v = ida_frame.calc_stkvar_struc_offset(pfn, insn, n)
-                            if v >= stkvar.begin()/8 and v < stkvar.end()/8:
-                                print("Found xref at 0x%08x, operand #%d" % (ea, n))
-                else:
-                    print("No stack variable named \"%s\"" % stkvar_name)
-        else:
+        if not pfn:
             print("Please position the cursor within a function")
+            return
+
+        v = ida_kernwin.get_current_viewer()
+        result = ida_kernwin.get_highlight(v)
+        if not result:
+            print("Please highlight the stack variable name")
+            return
+
+        stkvar_name, _ = result
+        frame = ida_typeinf.tinfo_t()
+        pfn = ida_funcs.get_func(cur_ea)
+        frame.get_func_frame(pfn)
+        stkvar_idx, stkvar = frame.get_udm(stkvar_name)
+        if stkvar_idx < 0:
+            print("No stack variable named \"%s\"" % stkvar_name)
+            return
+
+        for ea in pfn:
+            F = ida_bytes.get_flags(ea)
+            for n in range(ida_ida.UA_MAXOP):
+                if not ida_bytes.is_stkvar(F, n):
+                    continue
+                insn = ida_ua.insn_t()
+                if not ida_ua.decode_insn(insn, ea):
+                    continue
+                v = ida_frame.calc_stkvar_struc_offset(pfn, insn, n)
+                if v >= stkvar.begin()/8 and v < stkvar.end()/8:
+                    print("Found xref at 0x%08x, operand #%d" % (ea, n))
 
     def update(self, ctx):
         return ida_kernwin.AST_ENABLE_FOR_WIDGET \

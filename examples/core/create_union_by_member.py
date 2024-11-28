@@ -1,5 +1,5 @@
 """
-summary: Programatically create a union.
+summary: Programmatically create a union.
 
 description:
     The goal of this script is to demonstrate some usage of the type API.

@@ -1,10 +1,10 @@
 """
-summary: Programatically create structures and/or unions.
+summary: Programmatically create structures and/or unions.
 
 description:
     The goal of this script is to demonstrate some usage of the type API.
     In this script, we:
-    * Create a structure by building it member by members. For this we
+    * Create a structure by building it member by member. For this we
     first create a udt (user data type) object. We, then, populate it with
     udms (user data type members). Finally we actually store it in the local
     types via a call to set_named_type.

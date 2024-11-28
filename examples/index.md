@@ -91,7 +91,7 @@ actions ctxmenu UI_Hooks
 
 #### add_frame_member
 <details>
-  <summary>Programatically add a new frame member to an existing frame.</summary>
+  <summary>Programmatically add a new frame member to an existing frame.</summary>
 
 <blockquote>
 
@@ -196,7 +196,7 @@ actions
 
 #### apply_callee_tinfo
 <details>
-  <summary>Programatically apply locally created function type info to all the addresses refering to that function.</summary>
+  <summary>Programatically apply locally created function type info to all the addresses referring to that function.</summary>
 
 <blockquote>
 
@@ -285,7 +285,7 @@ desktop plugin UI_Hooks
 
 #### change_stkvar_name
 <details>
-  <summary>Programatically change the name of an *existing* stack variable.</summary>
+  <summary>Programmatically change the name of an *existing* stack variable.</summary>
 
 <blockquote>
 
@@ -324,7 +324,7 @@ stack variable:
 
 #### change_stkvar_type
 <details>
-  <summary>Programatically change the type and the name of a stack variable. For this sample we will use RtlImageNtHeader from ntdll.dll.</summary>
+  <summary>Programmatically change the type and the name of a stack variable. For this sample we will use RtlImageNtHeader from ntdll.dll.</summary>
 
 <blockquote>
 
@@ -365,6 +365,8 @@ instruction to get the stack variable index in the frame.
 * ida_typeinf.tinfo_t
 * ida_ua.decode_insn
 * ida_ua.insn_t
+* ida_ua.o_reg
+* idautils.procregs.r9.reg
 
 </blockquote>
 
@@ -426,7 +428,7 @@ coloring UI_Hooks
 
 #### create_array
 <details>
-  <summary>Programatically create an array.</summary>
+  <summary>Programmatically create an array.</summary>
 
 <blockquote>
 
@@ -452,7 +454,7 @@ create_array tinfo_t method.
 
 #### create_bfstruct
 <details>
-  <summary>Programatically create a bitfield structure.</summary>
+  <summary>Programmatically create a bitfield structure.</summary>
 
 <blockquote>
 
@@ -483,7 +485,7 @@ made of three 'members' spanning it entirely:
 
 #### create_bmenum
 <details>
-  <summary>Programatically create a bitmask enum.</summary>
+  <summary>Programmatically create a bitmask enum.</summary>
 
 <blockquote>
 
@@ -508,7 +510,7 @@ In this script, we create a bitmask enumeration member by member.
 
 #### create_libssh2_til
 <details>
-  <summary>Programatically create a til file.</summary>
+  <summary>Programmatically create a til file.</summary>
 
 <blockquote>
 
@@ -541,7 +543,7 @@ In this script, we:
 
 #### create_struct_by_member
 <details>
-  <summary>Programatically create structures and/or unions.</summary>
+  <summary>Programmatically create structures and/or unions.</summary>
 
 <blockquote>
 
@@ -554,7 +556,7 @@ core
 #### Description
 The goal of this script is to demonstrate some usage of the type API.
 In this script, we:
-* Create a structure by building it member by members. For this we
+* Create a structure by building it member by member. For this we
 first create a udt (user data type) object. We, then, populate it with
 udms (user data type members). Finally we actually store it in the local
 types via a call to set_named_type.
@@ -573,7 +575,7 @@ types via a call to set_named_type.
 
 #### create_struct_by_parsing
 <details>
-  <summary>Programatically create structures.</summary>
+  <summary>Programmatically create structures.</summary>
 
 <blockquote>
 
@@ -588,9 +590,7 @@ The goal of this script is to demonstrate some usage of the type API.
 In this script, we create a structure using the "parsing" method.
 
 #### Uses
-* ida_typeinf.NTF_TYPE
-* ida_typeinf.del_named_type
-* ida_typeinf.idc_parse_types
+* ida_typeinf.tinfo_t
 
 </blockquote>
 
@@ -644,7 +644,7 @@ Gergely Erdelyi (gergely.erdelyi@d-dome.net)
 
 #### create_union_by_member
 <details>
-  <summary>Programatically create a union.</summary>
+  <summary>Programmatically create a union.</summary>
 
 <blockquote>
 
@@ -797,7 +797,7 @@ one format for a specific 'custom data type'.)
 
 #### del_struct_members
 <details>
-  <summary>Programatically delete a range of members in a structure</summary>
+  <summary>Programmatically delete a range of members in a structure</summary>
 
 <blockquote>
 
@@ -810,7 +810,7 @@ core
 #### Description
 The goal of this script is to demonstrate some usage of the type API.
 In this script, we first create a structure with many members, and then
-remove all those that fall within a range
+remove all those that fall within a range.
 
 #### Uses
 * ida_typeinf.STRMEM_OFFSET
@@ -1058,7 +1058,7 @@ IDB_Hooks
 
 #### gap_size_align_snippet
 <details>
-  <summary></summary>
+  <summary>Gaps & alignment detection in structures.</summary>
 
 <blockquote>
 
@@ -1069,7 +1069,8 @@ IDB_Hooks
 core
 
 #### Description
-
+The goal of this script is to illustrate ways to detect gaps & alignments
+in structures, from a structure name & (byte) offset.
 
 #### Uses
 * ida_range.rangeset_t
@@ -1181,7 +1182,6 @@ The goal of this script is to demonstrate some usage of the type API.
 * ida_typeinf.TIL_ADD_ALREADY
 * ida_typeinf.TIL_ADD_OK
 * ida_typeinf.add_til
-* ida_typeinf.get_idati
 * ida_typeinf.tinfo_t
 
 </blockquote>
@@ -1331,7 +1331,7 @@ this we:
 
 #### list_frame_info
 <details>
-  <summary>Programatically list some frame information.</summary>
+  <summary>Programmatically list some frame information.</summary>
 
 <blockquote>
 
@@ -1721,7 +1721,7 @@ core
 
 #### list_struct_member
 <details>
-  <summary>Programatically list the members of a user provided structure name.</summary>
+  <summary>Programmatically list the members of a user provided structure name.</summary>
 
 <blockquote>
 
@@ -1783,7 +1783,7 @@ local types.
 
 #### list_union_member
 <details>
-  <summary>Programatically list the members of a user provided union name.</summary>
+  <summary>Programmatically list the members of a user provided union name.</summary>
 
 <blockquote>
 
@@ -1895,7 +1895,7 @@ In this script, we:
 
 #### print_stkvar_xrefs
 <details>
-  <summary>Programatically list the xref for each stack variables in the frame.</summary>
+  <summary>Programmatically list the xref for each stack variables in the frame.</summary>
 
 <blockquote>
 
@@ -1920,9 +1920,11 @@ xref:
 * ida_frame.get_func_frame
 * ida_frame.xreflist_t
 * ida_funcs.get_func
+* ida_kernwin.get_screen_ea
 * ida_typeinf.tinfo_t
 * ida_typeinf.udt_type_data_t
-* idc.here
+* ida_xref.dr_R
+* ida_xref.dr_W
 
 </blockquote>
 
@@ -2112,7 +2114,7 @@ actions
 
 #### visit_tinfo
 <details>
-  <summary>Programatically visit a type.</summary>
+  <summary>Programmatically visit a type.</summary>
 
 <blockquote>
 

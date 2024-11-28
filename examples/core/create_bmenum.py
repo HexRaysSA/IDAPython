@@ -1,5 +1,5 @@
 """
-summary: Programatically create a bitmask enum.
+summary: Programmatically create a bitmask enum.
 
 description:
     The goal of this script is to demonstrate some usage of the type API.

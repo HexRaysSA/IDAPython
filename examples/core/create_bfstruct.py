@@ -1,5 +1,5 @@
 """
-summary: Programatically create a bitfield structure.
+summary: Programmatically create a bitfield structure.
 
 description:
     The goal of this script is to demonstrate some usage of the type API.
@@ -15,7 +15,7 @@ level: intermediate
 """
 import ida_typeinf
 
-# Create and fill the containing use data type.
+# Create and fill the containing user data type.
 udt = ida_typeinf.udt_type_data_t()
 for name, offset, size, bitfield_info in [
     ("bf1", 0, 20, (4, 20)),

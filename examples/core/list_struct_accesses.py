@@ -1,3 +1,6 @@
+
+# ;! comment header
+
 import ida_bytes
 import ida_pro
 import ida_ua
@@ -11,11 +14,11 @@ class tid_array_iter():
     def __init__(self, path, count):
         self.path = path
         self.count = count
-    
+
     def __iter__(self):
         self.curr = 0
         return self
-    
+
     def __next__(self):
         if self.curr >= self.count:
             raise StopIteration
@@ -23,11 +26,11 @@ class tid_array_iter():
             idx = self.curr
             self.curr += 1
             return self.path[idx] """
-        
+
 
 def get_member_fullname(id):
     return ida_typeinf.get_tid_name(id)
-    
+
 def get_struct_accesses(ea: int, opnum: int) -> list[str]:
     flags = ida_bytes.get_full_flags(ea)
 
@@ -38,6 +41,7 @@ def get_struct_accesses(ea: int, opnum: int) -> list[str]:
         return []
 
     num_ops = 0
+    # ;! nice idea to inject via Swig a '__len__' method to the instruction object that does that.
     while insn.ops[num_ops].type != ida_ua.o_void:
         num_ops += 1
 
@@ -56,6 +60,7 @@ def get_struct_accesses(ea: int, opnum: int) -> list[str]:
         # requested operand not a structure
         return []
 
+    # ;! add comment here
     delta = ida_pro.sval_pointer()
     path = ida_pro.tid_array(ida_nalt.MAXSTRUCPATH)
 
@@ -66,11 +71,6 @@ def get_struct_accesses(ea: int, opnum: int) -> list[str]:
 
     count = ida_bytes.get_stroff_path(path.cast(), delta.cast(), insn.ea, opnum)
     delta = delta.value()
-
-    # Bonus: This segfaults
-    #tids = [p for p in path]
-    #path_iter = tid_array_iter(path, count)
-    #tids = [ p for p in path_iter ]
 
     out = []
     for s in range(count):
@@ -97,6 +97,4 @@ def get_struct_accesses(ea: int, opnum: int) -> list[str]:
                     else:
                         out.append(f"{name}")
 
-
     return out
-    

@@ -20,13 +20,14 @@ import ida_idp
 import ida_kernwin
 import ida_nalt
 
-regs = ["rsi"]
 
 func = ida_funcs.get_func(ida_kernwin.get_screen_ea())
 func_type = ida_typeinf.tinfo_t()
 ida_nalt.get_tinfo(func_type, func.start_ea)
 func_details = ida_typeinf.func_type_data_t()
 func_type.get_func_details(func_details)
+
+regs = ["rsi"]
 for reg in regs:
     reg_info = ida_idp.reg_info_t()
     ida_idp.parse_reg_name(reg_info, reg)

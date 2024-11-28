@@ -1,5 +1,5 @@
 """
-summary: Programatically add a new frame member to an existing frame.
+summary: Programmatically add a new frame member to an existing frame.
 
 description:
     The goal of this script is to demonstrate some usage of the type API.
@@ -21,35 +21,41 @@ import ida_range
 import idc
 
 def add_frame_member(func_ea):
-
     name = "my_stkvar"
 
     tif = ida_typeinf.tinfo_t(ida_typeinf.BTF_UINT64)
     tif.create_ptr(tif)
 
     func = ida_funcs.get_func(func_ea)
-    if func:
-        print(f"Function @ {func.start_ea:x}")
-        frame_tif = ida_typeinf.tinfo_t()
-        if ida_frame.get_func_frame(frame_tif, func):
-            print(f"{frame_tif._print()}")
-            rs = ida_range.rangeset_t()
-            sp_offset = 0
-            if frame_tif.calc_gaps(rs):
-                for range in rs:
-                    if range.start_ea <= 0:
-                        continue
-                    elif (range.end_ea - range.start_ea) >= tif.get_size():
-                        sp_offset = range.start_ea
-                        print(f"Range [{range.start_ea:x}, {range.end_ea:x}[ selected.")
-                        break
-            if sp_offset > 0:
-                sval = ida_frame.calc_frame_offset(func, sp_offset, None, None)
-                if ida_frame.add_frame_member(func, name, sval, tif):
-                    print(f"Frame member added at frame offset {sval}!")
-                else:
-                    print("Failed adding frame member")
-            else:
-                print("Could not find gaps in current frame...")
+    if not func:
+        print('Failed to get function!')
+        return
+    print(f"Function @ {func.start_ea:x}")
+
+    frame_tif = ida_typeinf.tinfo_t()
+    if not ida_frame.get_func_frame(frame_tif, func):
+        print('Failed to get frame!')
+        return
+    print(f"{frame_tif._print()}")
+
+    rs = ida_range.rangeset_t()
+    sp_offset = 0
+    if frame_tif.calc_gaps(rs):
+        for range in rs:
+            if range.start_ea <= 0:
+                continue
+            elif (range.end_ea - range.start_ea) >= tif.get_size():
+                sp_offset = range.start_ea
+                print(f"Range [{range.start_ea:x}, {range.end_ea:x}[ selected.")
+                break
+    
+    if sp_offset > 0:
+        sval = ida_frame.calc_frame_offset(func, sp_offset, None, None)
+        if ida_frame.add_frame_member(func, name, sval, tif):
+            print(f"Frame member added at frame offset {sval}!")
+        else:
+            print("Failed adding frame member")
+    else:
+        print("Could not find gaps in current frame...")
 
 add_frame_member(idc.here())

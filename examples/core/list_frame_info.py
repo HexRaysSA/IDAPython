@@ -1,5 +1,5 @@
 """
-summary: Programatically list some frame information.
+summary: Programmatically list some frame information.
 
 description:
     The goal of this script is to demonstrate some usage of the type API.

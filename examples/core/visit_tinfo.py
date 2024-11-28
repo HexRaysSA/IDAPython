@@ -1,5 +1,5 @@
 """
-summary: Programatically visit a type.
+summary: Programmatically visit a type.
 
 description:
     The goal of this script is to demonstrate some usage of the type API. 

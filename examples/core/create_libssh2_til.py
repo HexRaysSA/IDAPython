@@ -1,5 +1,5 @@
 """
-summary: Programatically create a til file.
+summary: Programmatically create a til file.
 
 description:
     The goal of this script is to demonstrate some usage of the type API.

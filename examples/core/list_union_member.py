@@ -1,5 +1,5 @@
 """
-summary: Programatically list the members of a user provided union name.
+summary: Programmatically list the members of a user provided union name.
 
 description:
     The goal of this script is to demonstrate some usage of the type API.

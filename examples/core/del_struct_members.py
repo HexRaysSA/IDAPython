@@ -1,10 +1,10 @@
 """
-summary: Programatically delete a range of members in a structure
+summary: Programmatically delete a range of members in a structure
 
 description:
     The goal of this script is to demonstrate some usage of the type API.
     In this script, we first create a structure with many members, and then
-    remove all those that fall within a range
+    remove all those that fall within a range.
 
 level: beginner
 """
