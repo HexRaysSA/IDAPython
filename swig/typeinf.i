@@ -361,7 +361,7 @@ idaman bool ida_export deserialize_tinfo(tinfo_t *tif, const til_t *til, const t
 %ignore udt_type_data_t::get_best_fit_member(asize_t) const;
 
 %feature("shadow") tinfo_t::tinfo_t %{
-def __init__(self, *args, ordinal=None, name=None, til=None):
+def __init__(self, *args, ordinal=None, name=None, tid=None, til=None):
     _ida_typeinf.tinfo_t_swiginit(self, _ida_typeinf.new_tinfo_t(*args))
     if args and self.empty():
         raise ValueError("Invalid input data: %s" % str(args))
@@ -371,6 +371,9 @@ def __init__(self, *args, ordinal=None, name=None, til=None):
     elif name is not None:
         if not self.get_named_type(til, name):
             raise ValueError("No type with name %s in type library %s" % (name, til))
+    elif tid is not None:
+        if not self.get_type_by_tid(tid):
+            raise ValueError("No type with ID %s in type library %s" % (name, til))
 %}
 
 // We want to make it possible to support both:
@@ -476,6 +479,13 @@ def __init__(self, *args, ordinal=None, name=None, til=None):
             raise TypeError("Type is not a structure")
         for edm in edt:
             yield edm_t(edm)
+
+    def iter_func(self):
+        fdt = func_type_data_t()
+        if not self.is_func() or not self.get_func_details(fdt):
+            raise TypeError("Type is not a function")
+        for arg in fdt:
+            yield funcarg_t(arg)
 
     get_edm_by_name = get_by_edm_name # bw-compat
   }
@@ -610,6 +620,13 @@ def __init__(self, *args, ordinal=None, name=None, til=None):
   }
 }
 
+%extend funcarg_t {
+
+  funcarg_t(const funcarg_t &r)
+  {
+    return new funcarg_t(r);
+  }
+}
 
 // Custom wrappers
 

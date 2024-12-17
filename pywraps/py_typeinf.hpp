@@ -617,6 +617,7 @@ class tinfo_t(object):
 
         * ordinal: int
         * name: str
+        * tid: int
         * til: til_t=None # `None` means `get_idati()`
 
         E.g.,
@@ -625,8 +626,9 @@ class tinfo_t(object):
         * tinfo_t(ordinal=10, til=get_idati())
         * tinfo_t(name="mytype_t")
         * tinfo_t(name="thattype_t", til=my_other_til)
+        * tinfo_t(tid=ida_nalt.get_strid(some_address))
 
-        The constructor may raise an exception if data was invalid/parsing failed.
+        The constructor may raise an exception if data was invalid, or if parsing failed.
 
         @param decl_type A simple type
         @param decl A valid C declaration
@@ -702,7 +704,7 @@ class tinfo_t(object):
 
     def get_edm_by_value(self, value: int, bmask: int = DEFMASK64, serial: int = 0):
         """
-        Retrieve an enumerator member with the specified value,
+        Retrieve an enumerator with the specified value,
         in the specified tinfo_t object.
 
         @param value the enumerator value
@@ -734,6 +736,24 @@ class tinfo_t(object):
                          the edm sorting order, it is silently ignored.
         """
         pass
+
+    def del_edm(self, data: int | str):
+        """
+        Delete an enumerator with the specified name
+        or the specified index, in the specified tinfo_t object.
+
+        @param data either an enumerator name, or index
+        @return TERR_OK in case of success, or another TERR_* value in case of error
+        """
+
+    def del_edm_by_value(self, value: int, bmask: int = DEFMASK64, serial: int = 0):
+        """
+        Delete an enumerator with the specified value,
+        in the specified tinfo_t object.
+
+        @param value the enumerator value
+        @return TERR_OK in case of success, or another TERR_* value in case of error
+        """
 
     def iter_struct(self):
         """
@@ -800,6 +820,24 @@ class tinfo_t(object):
         Will raise an exception if this type is not an enumeration
 
         @return a edm_t-producing generator
+        """
+        pass
+
+    def iter_func(self):
+        """
+        Iterate on the arguments contained in this function prototype
+
+        Example:
+
+            address = ...
+            func = ida_funcs.get_func(address)
+            func_type = func.prototype
+            for arg in func_type.iter_func():
+                print(f"{arg.name}, of type {arg.type}")
+
+        Will raise an exception if this type is not a function
+
+        @return a funcarg_t-producing generator
         """
         pass
 

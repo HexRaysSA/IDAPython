@@ -1256,7 +1256,7 @@ bool idaapi py_menu_item_callback(void *userdata)
   PyObject *args = PyTuple_GetItem(o, 1);
 
   // Call the python function
-  newref_t result(PyEval_CallObject(func, args));
+  newref_t result(PyObject_Call(func, args, nullptr));
 
   // We cannot raise an exception in the callback, just print it.
   if ( result == nullptr )
@@ -1299,7 +1299,7 @@ static void py_ss_restore_callback(const char *err_msg, void *userdata)
   PyObject *cb_args = Py_BuildValue("(sO)", err_msg, args);
 
   // Call the python function
-  newref_t result(PyEval_CallObject(func, cb_args));
+  newref_t result(PyObject_Call(func, cb_args, nullptr));
 
   // Free cb_args and userdata
   Py_DECREF(cb_args);

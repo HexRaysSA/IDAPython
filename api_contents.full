@@ -18093,14 +18093,16 @@ ida_bytes.get_strlit_contents (function)
     @return: a bytes-filled str object.
 
 ida_bytes.get_stroff_path (function)
-    get_stroff_path(path, delta, ea, n) -> int
-    Get struct path of operand.
+    Get the structure offset path for operand `n`, at the
+    specified address.
     
-    @param path: (C++: tid_t *) buffer for structure path (strpath). see nalt.hpp for more info.
-    @param delta: (C++: adiff_t *) struct offset delta
-    @param ea: (C++: ea_t) linear address
-    @param n: (C++: int) 0..UA_MAXOP-1 operand number, OPND_ALL one of the operands
-    @return: length of strpath
+    Note: for backward-compatibility reasons, this function also supports the prototype:
+    
+    get_stroff_path(path : tid_array, delta : sval_pointer, ea : int, n : int)
+    
+    @param ea: address where the operand holds a path to a structure offset
+    @param n: operand number
+    @return: a tuple holding a (list_of_tid_t's, delta_within_the_last_type), or (None, None)
 
 ida_bytes.get_wide_byte (function)
     get_wide_byte(ea) -> uint64
@@ -25956,6 +25958,33 @@ ida_funcs.func_t.frsize (variable)
     size of local variables part of frame in bytes. If FUNC_FRAME is set and fpd==0,
     the frame pointer (EBP) is assumed to point to the top of the local variables
     range.
+
+ida_funcs.func_t.get_frame_object (method)
+    Retrieve the function frame, in the form of a structure
+    where frame offsets that are accessed by the program, as well
+    as areas for "saved registers" and "return address", are
+    represented by structure members.
+    
+    If the function has no associated frame, return None
+    
+    @return: a ida_typeinf.tinfo_t object representing the frame, or None
+
+ida_funcs.func_t.get_name (method)
+    Get the function name
+    
+    @return: the function name
+
+ida_funcs.func_t.get_prototype (method)
+    Retrieve the function prototype.
+    
+    Once you have obtained the prototype, you can:
+    
+    * retrieve the return type through ida_typeinf.tinfo_t.get_rettype()
+    * iterate on the arguments using ida_typeinf.tinfo_t.iter_func()
+    
+    If the function has no associated prototype, return None
+    
+    @return: a ida_typeinf.tinfo_t object representing the prototype, or None
 
 ida_funcs.func_t.head_items (method)
     Alias for func_item_iterator_t(self).head_items()
@@ -58964,16 +58993,68 @@ ida_tryblks.tryblks_t.truncate (method)
     truncate(self)
 
 ida_typeinf (module)
-    Describes the type information records in IDA.
+    Manipulate type information in IDA.
     
-    The recommended way of using type info is to use the tinfo_t class. The type
-    information is internally kept as an array of bytes terminated by 0.
+    In IDA, types are represented by, and manipulated through tinfo_t objects.
     
-    Items in brackets [] are optional and sometimes are omitted. type_t... means a
-    sequence of type_t bytes which defines a type.
+    A tinfo_t can represent a simple type (e.g., `int`, `float`), a complex types
+    (structures, enums, unions, typedefs), or even an arrays, or a function
+    prototype.
     
-    @note: to work with the types of instructions or data in the database, use
-           get_tinfo()/set_tinfo() and similar functions.
+    The key types in this file are:
+    
+    til_t - a type info library. Holds tinfo_t objects tinfo_t - information about a
+    type (simple, complex, ...)
+    
+    # Glossary
+    
+    All throughout this file, there are certain terms that will keep appearing.
+    Let's go through them:
+    
+    udt: "user-defined type": a structure or union - but not enums. See
+    udt_type_data_t udm: "udt member": i.e., a structure or union member. See udm_t
+    edm: "enum member": i.e., an enumeration member - i.e., an enumerator. See edm_t
+    
+    # Under the hood
+    
+    The tinfo_t type provides a lot of useful methods already, but it's possible to
+    achieve even more by "unpacking" its contents into the container classes:
+    
+    udt_type_data_t - for structures & unions. See tinfo_t::get_udt_details .
+    Essentially, a vector of udm_t enum_type_data_t - for enumerations. See
+    tinfo_t::get_enum_details . Essentially, a vector of edm_t ptr_type_data_t - for
+    pointers. See tinfo_t::get_ptr_details array_type_data_t - for arrays. See
+    tinfo_t::get_array_details func_type_data_t - for function prototypes. See
+    tinfo_t::get_func_details
+    
+    # Attached & detached tinfo_t objects
+    
+    While a til_t hosts tinfo_t instances, it's possible to create tinfo_t objects
+    that are not registered in a til_t.
+    
+    Here is an example, assigning a function prototype:
+    
+    func_type_data_t func_info;
+    
+    funcarg_t argc; argc.name = "argc"; argc.type = tinfo_t(BT_INT);
+    func_info.push_back(argc);
+    
+    funcarg_t argv; argc.name = "argv"; argc.type = tinfo_t("const char **");
+    func_info.push_back(argv)
+    
+    tinfo_t tif; if ( tif.create_func(func_info) ) { ea_t ea = // get address of
+    "main" apply_tinfo(ea, tif, TINFO_DEFINITE); }
+    
+    This code manipulates "detached" tinfo_t objects.
+    
+    On the other hand, the following code manipulates an "attached" tinfo_t object,
+    and any operation that modifies it, will also modify it in the hosting til_t:
+    
+    tinfo_t tif; Load type from the "Local Types" til_t. Note: we could have used
+    `get_idati()` instead of nullptr if ( tif.get_named_type(nullptr, "my_struct_t")
+    ) tif.add_udm("extra_field", "unsigned long long");
+    
+    You can check a tinfo_t instance is attached, by calling tinfo_t::is_typeref
 
 ida_typeinf.ADDTIL_ABORTED (variable)
     til was not loaded (incompatible til rejected by user)
@@ -60420,6 +60501,9 @@ ida_typeinf.TERR_NESTED (variable)
 
 ida_typeinf.TERR_NOT_COMPAT (variable)
     the new type is not compatible with the old type
+
+ida_typeinf.TERR_NOT_FOUND (variable)
+    member not found
 
 ida_typeinf.TERR_NOT_IMPL (variable)
     not implemented
@@ -64209,6 +64293,7 @@ ida_typeinf.tinfo_t.__init__ (method)
     
     * ordinal: int
     * name: str
+    * tid: int
     * til: til_t=None # `None` means `get_idati()`
     
     E.g.,
@@ -64217,8 +64302,9 @@ ida_typeinf.tinfo_t.__init__ (method)
     * tinfo_t(ordinal=10, til=get_idati())
     * tinfo_t(name="mytype_t")
     * tinfo_t(name="thattype_t", til=my_other_til)
+    * tinfo_t(tid=ida_nalt.get_strid(some_address))
     
-    The constructor may raise an exception if data was invalid/parsing failed.
+    The constructor may raise an exception if data was invalid, or if parsing failed.
     
     @param decl_type: A simple type
     @param decl: A valid C declaration
@@ -64517,10 +64603,18 @@ ida_typeinf.tinfo_t.del_attrs (method)
     Del all type attributes. typerefs cannot be modified by this function.
 
 ida_typeinf.tinfo_t.del_edm (method)
-    del_edm(self, idx, etf_flags=0) -> tinfo_code_t
+    Delete an enumerator with the specified name
+    or the specified index, in the specified tinfo_t object.
     
-    @param idx: size_t
-    @param etf_flags: uint
+    @param data: either an enumerator name, or index
+    @return: TERR_OK in case of success, or another TERR_* value in case of error
+
+ida_typeinf.tinfo_t.del_edm_by_value (method)
+    Delete an enumerator with the specified value,
+    in the specified tinfo_t object.
+    
+    @param value: the enumerator value
+    @return: TERR_OK in case of success, or another TERR_* value in case of error
 
 ida_typeinf.tinfo_t.del_edms (method)
     del_edms(self, idx1, idx2, etf_flags=0) -> tinfo_code_t
@@ -64613,15 +64707,21 @@ ida_typeinf.tinfo_t.expand_udt (method)
     expand_udt(self, idx, delta, etf_flags=0) -> tinfo_code_t
     Expand/shrink a structure by adding/removing a gap before the specified member.
     
+    For regular structures, either the gap can be accommodated by aligning the next
+    member with an alignment directive, or an explicit "gap" member will be
+    inserted. Also note that it is impossible to add a gap at the end of a regular
+    structure.
+    
+    When it comes to fixed-layout structures, there is no need to either add new
+    "gap" members or align existing members, since all members have a fixed offset.
+    It is possible to add a gap at the end of a fixed-layout structure, by passing
+    `-1` as index.
+    
     @param idx: (C++: size_t) index of the member
     @param delta: (C++: adiff_t) number of bytes to add or remove
-    @param etf_flags: (C++: uint) etf_flag_t Please note that it is impossible to add a gap at
-                      the very end of a structure. However, adding before a regular
-                      member is possible. This function can be used to remove gaps
-                      in the middle of a structure by specifying a negative delta
-                      value.
-    @note: It is possible to add/remove a gap at the end of a fixed structure. Use
-           IDX equal to the number of members for that.
+    @param etf_flags: (C++: uint) etf_flag_t
+    @note: This function can be used to remove gaps in the middle of a structure by
+           specifying a negative delta value.
 
 ida_typeinf.tinfo_t.find_edm (method)
     find_edm(self, edm, value, bmask=DEFMASK64, serial=0) -> ssize_t
@@ -64740,7 +64840,7 @@ ida_typeinf.tinfo_t.get_edm_by_tid (method)
     @param tid: tid_t
 
 ida_typeinf.tinfo_t.get_edm_by_value (method)
-    Retrieve an enumerator member with the specified value,
+    Retrieve an enumerator with the specified value,
     in the specified tinfo_t object.
     
     @param value: the enumerator value
@@ -65552,6 +65652,21 @@ ida_typeinf.tinfo_t.iter_enum (method)
     Will raise an exception if this type is not an enumeration
     
     @return: a edm_t-producing generator
+
+ida_typeinf.tinfo_t.iter_func (method)
+    Iterate on the arguments contained in this function prototype
+    
+    Example:
+    
+        address = ...
+        func = ida_funcs.get_func(address)
+        func_type = func.prototype
+        for arg in func_type.iter_func():
+            print(f"{arg.name}, of type {arg.type}")
+    
+    Will raise an exception if this type is not a function
+    
+    @return: a funcarg_t-producing generator
 
 ida_typeinf.tinfo_t.iter_struct (method)
     Iterate on the members composing this structure.
